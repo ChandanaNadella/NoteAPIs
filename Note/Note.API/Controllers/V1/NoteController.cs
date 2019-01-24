@@ -175,155 +175,25 @@
         [HttpGet(Name = "getAllNotes")]
         [AllowAnonymous]
         //[Route("")]
-        
+
         public IActionResult Get()
         {
-          //  List<category> lstcategory = new List<category>();
-            NoteDataContext db = new NoteDataContext();
-
-           var  lstcategory = objcat.GetAllCategories();
-            
-
-            return Ok(lstcategory);
+            NoteDataContext objnote = new NoteDataContext();
+            var lstNote = objnote.GetOperatoryNotes();
+            return Ok(lstNote);
 
         }
 
-        //[Route("{id}")]
-        //public IActionResult Get(int id)
-        //{
-        //    var note = notes.Find(s => s.Id == id);
-        //    if (note == null)
+        [HttpGet("{id}")]
+        public IActionResult Detail(string id)
+        {
+            NoteDataContext objnote = new NoteDataContext();
+            var lstNote = objnote.GetOperatoryNotesByPatientId(id);
+            return Ok(lstNote);
 
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(note);
+        }
 
-        //}
-
-        //[HttpGet(Name = "getAllUsers")]
-        //public IActionResult GetAll([FromQuery]UserResourceParameters pageparams)
-        //{
-        //    if (!_propertyMappingService.ValidMappingExistsFor<UserCreationResponse, RP.User>
-        //       (pageparams.OrderBy))
-        //    {
-        //        return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
-        //    }
-
-
-        //    if (!_typeHelperService.TypeHasProperties<UserCreationResponse>
-        //        (pageparams.Fields))
-        //    {
-        //        return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
-        //    }
-
-        //    var users = _userService.GetAll(pageparams);
-
-        //    var prevPageLink = users.Item1.HasPrevious ?
-        //        CreateUserResourceUri(pageparams,
-        //        ResourceUriType.PreviousPage) : null;
-
-        //    var nxtPageLink = users.Item1.HasNext ?
-        //        CreateUserResourceUri(pageparams,
-        //        ResourceUriType.NextPage) : null;
-
-        //    var paginationMetadata = new
-        //    {
-        //        totalCount = users.Item1.TotalCount,
-        //        pageSize = users.Item1.PageSize,
-        //        currentPage = users.Item1.CurrentPage,
-        //        totalPages = users.Item1.TotalPages,
-        //        previousPageLink = prevPageLink,
-        //        nextPageLink = nxtPageLink
-        //    };
-
-        //    Response.Headers.Add("X-Pagination",
-        //        Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
-
-        //    var userMappedList = Mapper.Map<IEnumerable<UserCreationResponse>>(users.Item1);
-
-        //    return Ok(new ApiSuccessResponseData(users.Item2, userMappedList.ShapeData(pageparams.Fields), new KeyValuePair<string, string>("200", users.Item3)));
-        //}
-
-
-        //[HttpGet("{id}", Name = "GetUser")]
-        //public IActionResult GetById(string id, [FromQuery] string fields)
-        //{
-        //    if (!_typeHelperService.TypeHasProperties<UserCreationResponse>
-        //      (fields))
-        //    {
-        //        return BadRequest();
-        //    }
-
-        //    var userFromRepo = _userService.GetById(id);
-
-        //    if (!userFromRepo.Item2)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var user = Mapper.Map<UserCreationResponse>(userFromRepo.Item1);
-        //    return Ok(user.ShapeData(fields));
-        //}
         #endregion
-
-        //#region PUT
-        //[HttpPut]
-        //[Route("Update")]
-        //public Tuple<User, bool, string> Update(string id, [FromBody]User userDto)
-        //{
-        //    // map dto to entity and set id
-        //    var user = _mapper.Map<Note.Services.Model.User>(userDto);
-        //    user.Id = id;
-
-        //    try
-        //    {
-        //        // save 
-        //        var userDtata = _userService.Update(user, userDto.Password);
-        //        return _mapper.Map<Tuple<User, bool, string>>(userDtata);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // return error message if there was an exception
-        //        return _mapper.Map<Tuple<User, bool, string>>(Tuple.Create(new User(), ex.Message));
-        //    }
-        //}
-
-        //[HttpPut]
-        //[Route("UserActivateDeactivate")]
-        //public Tuple<bool, string> UserActivateDeactivate(string id)
-        //{
-        //    try
-        //    {
-        //        var userDtata = _userService.UserActivateDeactivate(id);
-        //        return _mapper.Map<Tuple<bool, string>>(userDtata);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // return error message if there was an exception
-        //        return _mapper.Map<Tuple<bool, string>>(Tuple.Create(new User(), ex.Message));
-        //    }
-        //}
-        //#endregion
-
-        //#region DELETE
-        //[HttpDelete]
-        //[Route("Delete")]
-        //public Tuple<bool, string> Delete(string id)
-        //{
-        //    try
-        //    {
-        //        var userDtata = _userService.Delete(id);
-        //        return _mapper.Map<Tuple<bool, string>>(userDtata);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // return error message if there was an exception
-        //        return _mapper.Map<Tuple<bool, string>>(Tuple.Create(new User(), ex.Message));
-        //    }
-        //}
-        //#endregion
-
         #endregion Methods
     }
     public class Notes
@@ -331,14 +201,4 @@
         public int Id { get; set; }
         public string Name { get; set; }
     }
-    //public class category
-    //{
-    //    public string category_id { get; set; }
-
-    //    public string description { get; set; }
-
-    //    public int color { get; set; }
-
-    //    public bool may_delete { get; set; }
-    //}
 }

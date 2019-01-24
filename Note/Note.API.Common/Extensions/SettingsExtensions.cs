@@ -1,13 +1,12 @@
 ﻿using Note.API.Common.Settings;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 
 namespace Note.API.Common.Extensions
 {
     public static class SettingsExtensions
     {
+        public static string DBConnectionString { get; set; }
+
         public static bool IsValid(this AppSettings data)
         {
             bool result = true;
@@ -35,6 +34,17 @@ namespace Note.API.Common.Extensions
                 result = false;
                 Debug.WriteLine("API's Title is empty");
             }
+
+            if (string.IsNullOrEmpty(data.ConnectionString))
+            {
+                result = false;
+                Debug.WriteLine("AppSettings does not contain database connection settings");
+            }
+            else
+            {
+                DBConnectionString = data.ConnectionString;
+            }
+
 
             return result;
         }

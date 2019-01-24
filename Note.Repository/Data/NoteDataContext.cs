@@ -7,40 +7,71 @@
     using System.Data.Odbc;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Threading.Tasks;    
+    using System.Threading.Tasks;
+    using System.Configuration;
+    using Note.API.Common.Extensions;
+    using DC = API.DataContracts;
 
     public class NoteDataContext : DbContext
     {
-        string connectionString = "Dsn=Dental;uid=PDBA;databasename=DENTSERV;databasefile=C:\\EagleSoft\\Data\\PattersonPM.db;servername=DENTAL;startline='C:\\EagleSoft\\Shared Files\\dbeng16.exe';autostop=YES;integrated=NO;description='Eaglesoft Database'";
-        
-        public IEnumerable<category> GetAllCategories()
+        public OdbcConnection DBConnection { get; set; }
+        public string ConnectionString { get; set; }
+        public string ConnectionPath = SettingsExtensions.DBConnectionString;
+
+
+        public IEnumerable<DC.operatory_notes> GetOperatoryNotes()
         {
-            List<category> lstcategory = new List<category>();
-           
-                using (OdbcConnection con = new OdbcConnection(connectionString)) {
+            List<DC.operatory_notes> lstNotes = new List<DC.operatory_notes>();
 
-                OdbcCommand cmd = new OdbcCommand("select * from category", con);
-                 con.Open();          
+            using (OdbcConnection con = new OdbcConnection(ConnectionPath))
 
-                    OdbcDataReader rdr = cmd.ExecuteReader();
+            {
+                OdbcCommand cmd = new OdbcCommand("select * from operatory_notes", con);
+                con.Open();
+                OdbcDataReader rdr = cmd.ExecuteReader();
+
                 while (rdr.Read())
                 {
-                    category category = new category();
-                    category.category_id= rdr["category_id"].ToString();
-                    category.description = rdr["description"].ToString();
-                    category.color = Convert.ToInt32(rdr["color"]);
-                    category.may_delete = Convert.ToBoolean(rdr["may_delete"]);
 
-                    lstcategory.Add(category);
+                    DC.operatory_notes on = new DC.operatory_notes();
+
+                    on.note_id = rdr["note_id"].ToString(); ;
+                    on.patient_id = rdr["patient_id"].ToString();
+                    on.note_type = rdr["note_type"].ToString();
+                    on.description = rdr["description"].ToString();
+                    on.practice_id = rdr["practice_id"].ToString();
+                    lstNotes.Add(on);
+                }
+                con.Close();
+            }
+            return lstNotes;
+        }
+        public IEnumerable<DC.operatory_notes> GetOperatoryNotesByPatientId(string patient_id)
+
+        {
+            List<DC.operatory_notes> lstNotes = new List<DC.operatory_notes>();
+            using (OdbcConnection con = new OdbcConnection(ConnectionPath))
+            {
+                OdbcCommand cmd = new OdbcCommand("SELECT * FROM operatory_notes WHERE patient_id = " + patient_id, con);
+
+                con.Open();
+                OdbcDataReader rdr = cmd.ExecuteReader();
+                while (rdr.Read())
+                {
+                    DC.operatory_notes on = new DC.operatory_notes();
+                    on.note_id = rdr["note_id"].ToString(); ;
+                    on.patient_id = rdr["patient_id"].ToString();
+                    on.note_type = rdr["note_type"].ToString();
+                    on.description = rdr["description"].ToString();
+
+                    lstNotes.Add(on);
 
                 }
                 con.Close();
-                return lstcategory;
-
-                }
-            
-
+            }
+            return lstNotes;
         }
+
         public NoteDataContext()
         {
         }
@@ -57,15 +88,5 @@
 
         public DbSet<Clinic> Clinic { get; set; }
         public DbSet<category> Category { get; set; }
-
-
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    if (!optionsBuilder.IsConfigured)
-        //    {
-        //        optionsBuilder.UseSqlServer(@"Server=DESKTOP-2GP9UUI;Database=Note;Trusted_Connection=True;");
-        //    }
-        //}
     }
 }
- 
