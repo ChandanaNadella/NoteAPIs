@@ -1,9 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace Note.API.Common.Helpers
+﻿namespace Note.API.DataContracts.Requests
 {
-    public class UserResourceParameters
+    public class NoteResourceParameter
     {
+        public NoteResourceParameter()
+        {
+            OperatoryNoteRequest = new OperatoryNotesRequest();
+        }
         const int maxPageSize = 40;
         public int PageNumber { get; set; } = 1;
 
@@ -20,13 +22,8 @@ namespace Note.API.Common.Helpers
             }
         }
 
-        public int Clinic { get; set; }
+        public OperatoryNotesRequest OperatoryNoteRequest { get; set; }
 
-        [Required]
-        public string patientId { get; set; }
-        public string clinicId { get; set; }
-        public string providerId { get; set; }
-        
         public string SearchQuery { get; set; }
         public string OrderBy { get; set; } = "Name";
 

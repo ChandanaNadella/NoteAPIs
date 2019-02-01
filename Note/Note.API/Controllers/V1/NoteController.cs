@@ -22,34 +22,38 @@
     using Note.Repository.Data;   
     using RC=Note.Repository.Data.Entities;
     using Note.Repository.Data.Entities;
+    using Note.API.DataContracts.Requests;
+    using Note.Services;
+    using System.IO;
+    using Microsoft.Extensions.Logging;
+    using System.Linq;
 
     [ApiVersion("1.0")]
     //[Route("api/users")]//required for default versioning
     [Route("api/v{version:apiVersion}/notes")]    
     [ApiController]
-    [Authorize]
+   
     public class NoteController : Controller
     {
+       
         private IUserService _userService;
         private AppSettings _appSettings;
         private IUrlHelper _urlHelper;
         private IPropertyMappingService _propertyMappingService;
         private ITypeHelperService _typeHelperService;
-        NoteDataContext objcat = new NoteDataContext();
-
-        static List<Notes> notes = new List<Notes>() {
-        new Notes(){ Id=1,Name="Note-1"},
-        new Notes(){ Id=2,Name="Note-2"},
-        new Notes(){ Id=3,Name="Note-3"},
-        };
-
-
+        private INoteService _noteService;
+        private ILogger _logger;
+       
         public NoteController(
-            IUserService userService,
+            INoteService noteService,
+            ILogger<NoteController> logger,
+            IUserService userService,             
             IOptions<AppSettings> appSettings, IUrlHelper urlHelper, IPropertyMappingService propertyMappingService,
             ITypeHelperService typeHelperService)
         {
+            _noteService = noteService;
             _userService = userService;
+            _logger = logger;
             _appSettings = appSettings.Value;
             _urlHelper = urlHelper;
             _propertyMappingService = propertyMappingService;
@@ -172,33 +176,63 @@
         #endregion
 
         #region GET
-        [HttpGet(Name = "getAllNotes")]
-        [AllowAnonymous]
-        //[Route("")]
+       // [HttpGet(Name = "getAllNotes")]
+       
+        //public IActionResult Get()
+        //{
+        //    NoteDataContext objnote = new NoteDataContext();
+        //    var lstNote = objnote.GetOperatoryNotes();
+        //    return Ok(lstNote);
 
-        public IActionResult Get()
+        //}
+
+       
+        [HttpGet("getPatientsNotes")]
+        public IActionResult GetPatientsNotes([FromQuery]NoteResourceParameter notesData)
         {
-            NoteDataContext objnote = new NoteDataContext();
-            var lstNote = objnote.GetOperatoryNotes();
-            return Ok(lstNote);
+
+            try
+            {
+
+                if (notesData.OperatoryNoteRequest.ClinicId == null || notesData.OperatoryNoteRequest.PatientId == null || notesData.OperatoryNoteRequest.ProviderId == null)
+                {
+
+                    return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
+
+                }
+                else
+                {
+                    IEnumerable<DC.OperatoryNotes> result = Mapper.Map<IEnumerable<DC.OperatoryNotes>>(_noteService.getNotes(notesData));
+
+                    if ((result==null) || (result.Count() == 0))
+                    {
+                        string filePath = @"..\Note.API.Common\ErrorLogs\Error.txt";
+                        using (StreamWriter writer = new StreamWriter(filePath, true))
+                        {
+                            writer.WriteLine("Date : " + DateTime.Now.ToString());
+                            writer.WriteLine("Error Status Code: 404, Error Status Message: Not Found");
+                            writer.WriteLine("-----------------------------------------------------------------------------");
+                        }
+
+                        return NotFound(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("404", "Not Found")));
+
+
+                    }
+                    return Ok(result);
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return null; 
 
         }
-
-        [HttpGet("{id}")]
-        public IActionResult Detail(string id)
-        {
-            NoteDataContext objnote = new NoteDataContext();
-            var lstNote = objnote.GetOperatoryNotesByPatientId(id);
-            return Ok(lstNote);
-
-        }
-
         #endregion
         #endregion Methods
     }
-    public class Notes
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
+   
+    
 }

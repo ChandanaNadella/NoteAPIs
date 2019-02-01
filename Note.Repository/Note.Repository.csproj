@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Note\Note.API.Common\Note.API.Common.csproj" />
-    <ProjectReference Include="..\Note\Note.API.DataContracts\Note.API.DataContracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,14 +1,6 @@
 ﻿namespace Note.API
 {
     using AutoMapper;
-    using Note.API.Common.Attributes;
-    using Note.API.Common.Extensions;
-    using Note.API.Common.Settings;
-    using Note.API.Swagger;
-    using Note.IoC.Configuration.Profiles;
-    using Note.Repository.Data;
-    using Note.Services;
-    using Note.Services.Contracts;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics;
@@ -16,7 +8,6 @@
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ApiExplorer;
-    using Microsoft.AspNetCore.Mvc.Formatters;
     using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.AspNetCore.Mvc.Versioning;
@@ -27,6 +18,14 @@
     using Microsoft.Extensions.PlatformAbstractions;
     using Microsoft.IdentityModel.Tokens;
     using Newtonsoft.Json.Serialization;
+    using Note.API.Common.Attributes;
+    using Note.API.Common.Extensions;
+    using Note.API.Common.Settings;
+    using Note.API.Swagger;
+    using Note.IoC.Configuration.Profiles;
+    using Note.Repository.Data;
+    using Note.Services;
+    using Note.Services.Contracts;
     using Swashbuckle.AspNetCore.Swagger;
     using System.IO;
     using System.Reflection;
@@ -73,7 +72,7 @@
                 setupAction =>
                 {
                     setupAction.Filters.Add(typeof(CustomFilterAttribute));
-                    setupAction.ReturnHttpNotAcceptable = true;
+                    setupAction.ReturnHttpNotAcceptable = true;                   
                    // setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
                    // setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter());
                 }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
@@ -178,6 +177,8 @@
 
             //Custom services (.NET CORE 2.1)
             services.AddTransient<IUserService, UserService>();
+
+            services.AddTransient<INoteService, NoteService>();  
             services.AddTransient<INewPatientService, NewPatientService>();
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
             services.AddTransient<ITypeHelperService, TypeHelperService>();
@@ -197,7 +198,7 @@
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApiVersionDescriptionProvider provider)
-        {
+         {
             app.UseMvc();
             if (env.IsDevelopment())
             {
@@ -219,7 +220,6 @@
                         {
                             var logger = loggerFactory.CreateLogger("Global Exception Logger.");
                             logger.LogError(500, exceptionHandlerFeature.Error, exceptionHandlerFeature.Error.Message);
-
                         }
 
                         context.Response.StatusCode = 500;

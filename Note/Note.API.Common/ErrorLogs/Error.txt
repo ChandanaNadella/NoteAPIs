@@ -1,0 +1,49 @@
+Date : 1/31/2019 5:52:15 PM
+Error Occurred :Patient Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 1/31/2019 5:52:16 PM
+Error Occurred :ProviderId is Invalid
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 1/31/2019 6:21:21 PM
+Error Status Code: 404, Error Status Message: Not Found
+-----------------------------------------------------------------------------
+Date : 1/31/2019 6:24:38 PM
+Error Occurred :ProviderId is Invalid
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 1/31/2019 6:36:05 PM
+Error Occurred :PatientId is Invalid
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 1/31/2019 6:36:06 PM
+Error Occurred :ProviderId is Invalid
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 1/31/2019 6:36:27 PM
+Error Occurred :ProviderId is Invalid
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 1/31/2019 6:37:17 PM
+Error Occurred :PatientId is Invalid
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 1/31/2019 6:37:20 PM
+Error Occurred :ProviderId is Invalid
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 1/31/2019 7:13:46 PM
+Error Occurred :ClinicId is Invalid
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 1/31/2019 7:14:34 PM
+Error Status Code: 404, Error Status Message: Not Found
+-----------------------------------------------------------------------------
+Date : 1/31/2019 7:15:07 PM
+Error Occurred :Patient Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 1/31/2019 7:15:38 PM
+Error Status Code: 404, Error Status Message: Not Found
+-----------------------------------------------------------------------------
