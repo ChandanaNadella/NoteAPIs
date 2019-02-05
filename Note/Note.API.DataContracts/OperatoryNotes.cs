@@ -76,7 +76,7 @@
     [MaxLength(5)]
     public string ServiceCode { set; get; }
 
-    public string PracticeId { set; get; }
+    public short ClinicID{ set; get; }
 
     public DateTime Freshness { set; get; }
 

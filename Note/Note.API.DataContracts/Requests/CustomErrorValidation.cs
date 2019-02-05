@@ -12,6 +12,7 @@ namespace Note.API.DataContracts.Requests
     {
        
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
+
         {
 
             var required = new RequiredAttribute();
@@ -19,20 +20,12 @@ namespace Note.API.DataContracts.Requests
 
             if (!valid)
             {
-                //Validation for ClinicId, PatientId and ProviderId not be blank.
-                string filePath = @"..\Note.API.Common\ErrorLogs\Error.txt";
-                using (StreamWriter writer = new StreamWriter(filePath, true))
-                {
-                    writer.WriteLine("Date : " + DateTime.Now.ToString());
-                    writer.WriteLine("Error Occurred :{0}", ErrorMessage);
-                    writer.WriteLine("Error Status Code: 400, Error Status Message: Bad Request" );
-                    writer.WriteLine("-----------------------------------------------------------------------------");
-                }
-
+                WriteToFileErrors();
                 return new ValidationResult(ErrorMessage);
             }
             else
             {
+                //int Clinicid = Convert.ToInt32(valid);
                 //Validation for ClinicId and PatientId to take only positive integer value. 
 
                 if (validationContext.MemberName == "ClinicId")
@@ -40,21 +33,28 @@ namespace Note.API.DataContracts.Requests
 
                     var regex = new RegularExpressionAttribute("^[1-9]\\d*$");
                     var validregex = regex.IsValid(value);
+
+
                     if (!validregex)
                     {
-                        string filePath = @"..\Note.API.Common\ErrorLogs\Error.txt";
-                        using (StreamWriter writer = new StreamWriter(filePath, true))
-                        {
-                            writer.WriteLine("Date : " + DateTime.Now.ToString());
-                            writer.WriteLine("Error Occurred :{0}", validationContext.DisplayName + " is Invalid");
-                            writer.WriteLine("Error Status Code: 400, Error Status Message: Bad Request");
-                            writer.WriteLine("-----------------------------------------------------------------------------");
-                        }
-
+                        WriteToFileErrors();
                         return new ValidationResult(validationContext.DisplayName + " is Invalid");
 
                     }
+                
+                else
+                {
+                    int validClinicId = Convert.ToInt32(value);
+                    if (validClinicId > 32767)
+                    {
+                        WriteToFileErrors();
+                        return new ValidationResult(validationContext.DisplayName + " is Invalid");
+                    }
                 }
+
+
+                }
+            
                 else if (validationContext.MemberName == "ProviderId")
                 {   //Validation for ProviderId to take AlphaNumeric characters and min=1 and max=3. 
 
@@ -62,16 +62,7 @@ namespace Note.API.DataContracts.Requests
                     var validregex_pro = regex_pro.IsValid(value);
                     if (!validregex_pro)
                     {
-                        string filePath = @"..\Note.API.Common\ErrorLogs\Error.txt";  
-                        
-                        using (StreamWriter writer = new StreamWriter(filePath, true))
-                        {
-                            writer.WriteLine("Date : " + DateTime.Now.ToString());
-                            writer.WriteLine("Error Occurred :{0}", validationContext.DisplayName + " is Invalid");
-                            writer.WriteLine("Error Status Code: 400, Error Status Message: Bad Request");
-                            writer.WriteLine("-----------------------------------------------------------------------------");
-                        }
-
+                        WriteToFileErrors();
                         return new ValidationResult(validationContext.DisplayName + " is Invalid");
 
                     }
@@ -85,15 +76,7 @@ namespace Note.API.DataContracts.Requests
                     var validregex_pat = regex_pat.IsValid(value);
                     if (!validregex_pat)
                     {
-                        string filePath = @"..\Note.API.Common\ErrorLogs\Error.txt";
-
-                        using (StreamWriter writer = new StreamWriter(filePath, true))
-                        {
-                            writer.WriteLine("Date : " + DateTime.Now.ToString());
-                            writer.WriteLine("Error Occurred :{0}", validationContext.DisplayName + " is Invalid");
-                            writer.WriteLine("Error Status Code: 400, Error Status Message: Bad Request");
-                            writer.WriteLine("-----------------------------------------------------------------------------");
-                        }
+                        WriteToFileErrors();
 
                         return new ValidationResult(validationContext.DisplayName + " is Invalid");
 
@@ -107,5 +90,25 @@ namespace Note.API.DataContracts.Requests
             //if there is no validations error.
             return null;
         }
+
+
+
+        public void WriteToFileErrors()
+        {
+            string filePath = @"..\Note.API.Common\ErrorLogs\Error.txt";
+            using (StreamWriter writer = new StreamWriter(filePath, true))
+            {
+                writer.WriteLine("Date : " + DateTime.Now.ToString());
+                writer.WriteLine("Error Occurred :{0}", ErrorMessage);
+                writer.WriteLine("Error Status Code: 400, Error Status Message: Bad Request");
+                writer.WriteLine("-----------------------------------------------------------------------------");
+            }
+            
+        }
+
+        
+
     }
+
+    
 }

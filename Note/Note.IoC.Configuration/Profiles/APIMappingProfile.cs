@@ -77,7 +77,7 @@
              $"{src.archive_path}"))
             .ForMember(dest => dest.ServiceCode, opt => opt.MapFrom(src =>
              $"{src.service_code}"))
-           .ForMember(dest => dest.PracticeId, opt => opt.MapFrom(src =>
+           .ForMember(dest => dest.ClinicID, opt => opt.MapFrom(src =>
             $"{src.practice_id}"))
           .ForMember(dest => dest.Freshness, opt => opt.MapFrom(src =>
            $"{src.freshness}"))

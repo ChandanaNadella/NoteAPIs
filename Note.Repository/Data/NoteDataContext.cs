@@ -55,7 +55,7 @@
                     on.archive_name = rdr["archive_name"].ToString();
                     on.archive_path = rdr["archive_path"].ToString();
                     on.service_code = rdr["service_code"].ToString();
-                    on.practice_id = rdr["practice_id"].ToString();
+                    on.practice_id = Convert.ToInt16(rdr["practice_id"]);
                     on.freshness = Convert.ToDateTime(rdr["freshness"]);
                     on.surface_detail = rdr["surface_detail"].ToString();
                     on.surface = rdr["surface"].ToString();
@@ -78,7 +78,7 @@
             }
             return (lstNotes);
         }
-        public IEnumerable<operatory_notes> GetOperatoryNotesByPatientIdByClinicIDByProviderId(string patientId, string clinicId, string providerId)
+        public IEnumerable<operatory_notes> GetOperatoryNotesByPatientIdByClinicIDByProviderId( string patientId, string clinicId, string providerId)
 
         {
             List<operatory_notes> lstNotes = new List<operatory_notes>();
@@ -123,7 +123,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                     on.archive_name = rdr["archive_name"].ToString();
                     on.archive_path = rdr["archive_path"].ToString();
                     on.service_code = rdr["service_code"].ToString();
-                    on.practice_id = rdr["practice_id"].ToString();
+                    on.practice_id = Convert.ToInt16(rdr["practice_id"]);
                     on.freshness = Convert.ToDateTime(rdr["freshness"]);
                     on.surface_detail = rdr["surface_detail"].ToString();
                     on.surface = rdr["surface"].ToString();
