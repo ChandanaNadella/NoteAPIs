@@ -12,5 +12,9 @@
         /// <param name="pageparams"></param>
         /// <returns></returns>
         IEnumerable<operatory_notes> getNotes(NoteResourceParameter pageparams);
+
+        IEnumerable<operatory_notes> InsertOrUpdateNotes(operatory_notes operatoryNotesToUpdate, int? autoNoteId);
+
+
     }
 }

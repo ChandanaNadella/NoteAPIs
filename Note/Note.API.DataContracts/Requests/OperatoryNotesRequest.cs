@@ -14,6 +14,6 @@ namespace Note.API.DataContracts.Requests
         
         public string PatientId { get; set; }
         [CustomError(ErrorMessage = "Provider Id is Required Field")]  
-        public string ProviderId { get; set; }
+        public string UserId { get; set; }
     }
 }

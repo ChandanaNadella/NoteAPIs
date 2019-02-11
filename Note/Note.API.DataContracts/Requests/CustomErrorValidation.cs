@@ -44,8 +44,12 @@ namespace Note.API.DataContracts.Requests
                 
                 else
                 {
-                    int validClinicId = Convert.ToInt32(value);
-                    if (validClinicId > 32767)
+                        //Int64 integer;
+                        // bool validClinicId = Int64.TryParse( Convert.ToString(value), out integer);
+                        int validClinicId = Convert.ToInt32(value);
+
+
+                     if (validClinicId > 65535)
                     {
                         WriteToFileErrors();
                         return new ValidationResult(validationContext.DisplayName + " is Invalid");

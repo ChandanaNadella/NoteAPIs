@@ -176,16 +176,6 @@
         #endregion
 
         #region GET
-       // [HttpGet(Name = "getAllNotes")]
-       
-        //public IActionResult Get()
-        //{
-        //    NoteDataContext objnote = new NoteDataContext();
-        //    var lstNote = objnote.GetOperatoryNotes();
-        //    return Ok(lstNote);
-
-        //}
-
        
         [HttpGet("getPatientsNotes")]
         public IActionResult GetPatientsNotes([FromQuery]NoteResourceParameter notesData)
@@ -194,7 +184,7 @@
             try
             {
 
-                if (notesData.OperatoryNoteRequest.ClinicId == null || notesData.OperatoryNoteRequest.PatientId == null || notesData.OperatoryNoteRequest.ProviderId == null)
+                if (notesData.OperatoryNoteRequest.ClinicId == null || notesData.OperatoryNoteRequest.PatientId == null || notesData.OperatoryNoteRequest.UserId == null)
                 {
 
                     return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
@@ -203,8 +193,10 @@
                 else
                 {
                     IEnumerable<DC.OperatoryNotes> result = Mapper.Map<IEnumerable<DC.OperatoryNotes>>(_noteService.getNotes(notesData));
+                   //var OperatoryRepo = _noteService.getNotes(notesData);
+                    //var Operatory = Mapper.Map<IEnumerable<OperatoryNotes>>(OperatoryRepo);
 
-                    if ((result==null) || (result.Count() == 0))
+                    if ((result == null) || (result.Count() == 0))
                     {
                         string filePath = @"..\Note.API.Common\ErrorLogs\Error.txt";
                         using (StreamWriter writer = new StreamWriter(filePath, true))
@@ -232,6 +224,28 @@
         }
         #endregion
         #endregion Methods
+
+        [HttpPost("postInsertOrUpdatePatientsNotes")]
+        public IActionResult PostInsertUpdateOperatoryNotes(OperatoryNotesUpdateDto opNotesDto, int? autoNoteId)
+        {
+
+            var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
+            //Checking whether the Note-Type is Contract-Note or not. Note-Type for Contract-Note is "N" 
+            if (opNotesDto.note_type != "N")
+            {
+                _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId);
+                return Ok();
+
+            }
+            //If the Note-Type is Contract-Note or Note-Type="N"
+            else
+            {
+                return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request, Note-Type should not be a Contract-Note")));
+            }
+           
+
+        }
+
     }
    
     

@@ -34,7 +34,7 @@ namespace Note.Services
         /// <returns></returns>
         public IEnumerable<operatory_notes> getNotes(NoteResourceParameter pageparams)
         {
-            var operatoryNotes = _context.GetOperatoryNotesByPatientIdByClinicIDByProviderId(pageparams.OperatoryNoteRequest.PatientId, pageparams.OperatoryNoteRequest.ClinicId, pageparams.OperatoryNoteRequest.ProviderId);
+            var operatoryNotes = _context.GetOperatoryNotesByPatientIdByClinicIDByProviderId(pageparams.OperatoryNoteRequest.PatientId, pageparams.OperatoryNoteRequest.ClinicId, pageparams.OperatoryNoteRequest.UserId);
 
             //var collectionBeforePaging = operatoryNotes.ApplySort(pageparams.OrderBy,
             //    _propertyMappingService.GetPropertyMapping<DC.Responses.UserCreationResponse, User>());
@@ -44,16 +44,27 @@ namespace Note.Services
             //var collectionBeforePaging = _context.GetOperatoryNotesByPatientIdByClinicIDByProviderId(pageparams.patientId, pageparams.clinicId, pageparams.providerId)
             //  .ApplySort(pageparams.OrderBy, _propertyMappingService.GetPropertyMapping<DC.OperatoryNotes, operatory_notes>());
 
-           // var collectionBeforePaging = _context.GetOperatoryNotesByPatientIdByClinicIDByProviderId(patientId,clinicId,providerId);
+            // var collectionBeforePaging = _context.GetOperatoryNotesByPatientIdByClinicIDByProviderId(patientId,clinicId,providerId);
 
 
 
-
-            return operatoryNotes; ;
+            return operatoryNotes;
+            //return _context.order.operatoryNotes.Skip(NoteResourceParameter.PageSize
+            //    * (NoteResourceParameter.PageNumber-1))
+            //    .Take(NoteResourceParameter.PageSize)
+            //    .ToList(); 
 
         }
 
-         
+        //Insert or Update
+        public IEnumerable<operatory_notes> InsertOrUpdateNotes(operatory_notes operatoryNotes, int? autoNoteId)        {
+
+            _context.InsertOrUpdateOperatoryNotes(operatoryNotes, autoNoteId);
+
+            return null;
+
+        }
+
 
         public Tuple<PagedList<User>, bool, string> GetAll(UserResourceParameters pageparams)
         {

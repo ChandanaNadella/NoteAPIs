@@ -5,19 +5,21 @@
 
     public class operatory_notes
     {
-        [Key]
+       [Key]
         [Required]
         public int note_id { set; get; }
+
+       
 
         #region Patient's Details
 
         [Required]
-        [MaxLength(5)]
+      [MaxLength(5)]
         //Value is from the patient_id column on the patient table.  
         //Foreign key fk_patient exists.
         public string patient_id { set; get; }
-
-        [MaxLength(40)]
+    
+       [MaxLength(40)]
         public string patientFirstName { set; get; }
 
         [MaxLength(40)]
@@ -32,20 +34,22 @@
         [MaxLength(3)]
         public string provider_id { set; get; }
 
-        [MaxLength(40)]
+         [MaxLength(40)]
         public string first_name { set; get; }
 
         [MaxLength(40)]
         public string last_name { set; get; }
 
         #endregion Provider's Details
+        [MaxLength(3)]
+        public string user_id { set; get; }
 
 
         [Required]
         public DateTime Date_entered { set; get; }
 
 
-        [MaxLength(1)]
+       [MaxLength(1)]
         public char note_class { set; get; }
 
         [MaxLength(1)]

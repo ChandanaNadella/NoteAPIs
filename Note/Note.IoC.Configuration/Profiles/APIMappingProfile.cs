@@ -20,7 +20,9 @@
 
             CreateMap<RP.NewPatient, DC.NewPatient>();
 
-
+            CreateMap<DC.OperatoryNotesUpdateDto, RP.operatory_notes>();
+           //.ForMember(dest => dest.provider_id, opt => opt.MapFrom(src =>
+              //  $"{src.user_id}"));
             #region Operatory Notes
             CreateMap<RP.operatory_notes, DC.OperatoryNotes>()
                 .AfterMap((rpnotes, dcnotes) => dcnotes.Patient = new DC.Patient
