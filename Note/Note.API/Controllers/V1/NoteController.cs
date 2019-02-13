@@ -36,7 +36,6 @@
     public class NoteController : Controller
     {
        
-        private IUserService _userService;
         private AppSettings _appSettings;
         private IUrlHelper _urlHelper;
         private IPropertyMappingService _propertyMappingService;
@@ -47,12 +46,10 @@
         public NoteController(
             INoteService noteService,
             ILogger<NoteController> logger,
-            IUserService userService,             
             IOptions<AppSettings> appSettings, IUrlHelper urlHelper, IPropertyMappingService propertyMappingService,
             ITypeHelperService typeHelperService)
         {
             _noteService = noteService;
-            _userService = userService;
             _logger = logger;
             _appSettings = appSettings.Value;
             _urlHelper = urlHelper;
@@ -62,41 +59,46 @@
 
 
         #region Utilities
-        private string CreateUserResourceUri(UserResourceParameters paginationResourceParameters, ResourceUriType type)
+        private string CreateNoteResourceUri(NoteResourceParameter paginationResourceParameters, ResourceUriType type)
         {
             switch (type)
             {
                 case ResourceUriType.PreviousPage:
-                    return _urlHelper.Link("getAllUsers",
+
+
+
+               var prevUrl=  _urlHelper.Link("GetPatientNotes",
                       new
                       {
                           fields = paginationResourceParameters.Fields,
                           orderBy = paginationResourceParameters.OrderBy,
-                          searchQuery = paginationResourceParameters.SearchQuery,
-                          genre = paginationResourceParameters.Clinic,
+                          //searchQuery = paginationResourceParameters.SearchQuery,
+                          //genre = paginationResourceParameters.Clinic,
                           pageNumber = paginationResourceParameters.PageNumber - 1,
                           pageSize = paginationResourceParameters.PageSize
                       });
+                    return prevUrl;
                 case ResourceUriType.NextPage:
-                    return _urlHelper.Link("getAllUsers",
+
+                    return _urlHelper.Link("GetPatientNotes",
                       new
                       {
                           fields = paginationResourceParameters.Fields,
                           orderBy = paginationResourceParameters.OrderBy,
-                          searchQuery = paginationResourceParameters.SearchQuery,
-                          genre = paginationResourceParameters.Clinic,
+                          //searchQuery = paginationResourceParameters.SearchQuery,
+                          //genre = paginationResourceParameters.Clinic,
                           pageNumber = paginationResourceParameters.PageNumber + 1,
                           pageSize = paginationResourceParameters.PageSize
                       });
 
                 default:
-                    return _urlHelper.Link("getAllUsers",
+                    return _urlHelper.Link("GetPatientNotes",
                     new
                     {
                         fields = paginationResourceParameters.Fields,
                         orderBy = paginationResourceParameters.OrderBy,
-                        searchQuery = paginationResourceParameters.SearchQuery,
-                        genre = paginationResourceParameters.Clinic,
+                        //searchQuery = paginationResourceParameters.SearchQuery,
+                        //genre = paginationResourceParameters.Clinic,
                         pageNumber = paginationResourceParameters.PageNumber,
                         pageSize = paginationResourceParameters.PageSize
                     });
@@ -114,71 +116,71 @@
         /// </summary>
         /// <param name="userDto"></param>
         /// <returns></returns>
-        [AllowAnonymous]
-        [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]UserCredentials userDto)
-        {
-            var user = Mapper.Map<Tuple<RP.User, bool, string>, Tuple<DC.User, bool, string>>(_userService.Authenticate(userDto.Username, userDto.Password));
+        //[AllowAnonymous]
+        //[HttpPost("authenticate")]
+        //public IActionResult Authenticate([FromBody]UserCredentials userDto)
+        //{
+        //    var user = Mapper.Map<Tuple<RP.User, bool, string>, Tuple<DC.User, bool, string>>(_userService.Authenticate(userDto.Username, userDto.Password));
 
-            if (!user.Item2)
-            {
-                switch (user.Item3)
-                {
-                    case AlertMessages.User_Doesnot_Exits:
-                        return NotFound(new ApiErrorResponseData(user.Item2, null, new KeyValuePair<string, string>("404", user.Item3)));
-                    case AlertMessages.Username_Password_Empty:
-                        return BadRequest(new ApiErrorResponseData(user.Item2, null, new KeyValuePair<string, string>("400", user.Item3)));
-                    case AlertMessages.Password_Incorrect:
-                        return BadRequest(new ApiErrorResponseData(user.Item2, null, new KeyValuePair<string, string>("400", user.Item3)));
-                }
-            }
+        //    if (!user.Item2)
+        //    {
+        //        switch (user.Item3)
+        //        {
+        //            case AlertMessages.User_Doesnot_Exits:
+        //                return NotFound(new ApiErrorResponseData(user.Item2, null, new KeyValuePair<string, string>("404", user.Item3)));
+        //            case AlertMessages.Username_Password_Empty:
+        //                return BadRequest(new ApiErrorResponseData(user.Item2, null, new KeyValuePair<string, string>("400", user.Item3)));
+        //            case AlertMessages.Password_Incorrect:
+        //                return BadRequest(new ApiErrorResponseData(user.Item2, null, new KeyValuePair<string, string>("400", user.Item3)));
+        //        }
+        //    }
 
-            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-            byte[] key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+        //    JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+        //    byte[] key = Encoding.ASCII.GetBytes(_appSettings.Secret);
 
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.Item1.Id.ToString())
-                }),
-                Expires = DateTime.UtcNow.AddHours(10),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
+        //    var tokenDescriptor = new SecurityTokenDescriptor
+        //    {
+        //        Subject = new ClaimsIdentity(new Claim[]
+        //        {
+        //            new Claim(ClaimTypes.Name, user.Item1.Id.ToString())
+        //        }),
+        //        Expires = DateTime.UtcNow.AddHours(10),
+        //        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        //    };
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            var tokenString = tokenHandler.WriteToken(token);
-            user.Item1.Token = tokenString;
+        //    var token = tokenHandler.CreateToken(tokenDescriptor);
+        //    var tokenString = tokenHandler.WriteToken(token);
+        //    user.Item1.Token = tokenString;
 
-            // return basic user info (without password) and token to store client side
-            return Ok(new ApiSuccessResponseData(user.Item2, user.Item1, new KeyValuePair<string, string>("200", user.Item3)));
-        }
+        //    // return basic user info (without password) and token to store client side
+        //    return Ok(new ApiSuccessResponseData(user.Item2, user.Item1, new KeyValuePair<string, string>("200", user.Item3)));
+        //}
 
-        [HttpPost("register")]
-        [AllowAnonymous]
-        public IActionResult Register([FromBody]DC.Requests.UserCreationRequest user)
-        {
-            try
-            {
-                // save 
-                Tuple<RP.User, bool, string> userData = _userService.Create(user);
+        //[HttpPost("register")]
+        //[AllowAnonymous]
+        //public IActionResult Register([FromBody]DC.Requests.UserCreationRequest user)
+        //{
+        //    try
+        //    {
+        //        // save 
+        //        Tuple<RP.User, bool, string> userData = _userService.Create(user);
 
-                if (!userData.Item2) return NotFound(new ApiErrorResponseData(userData.Item2, null, new KeyValuePair<string, string>("404", userData.Item3)));
+        //        if (!userData.Item2) return NotFound(new ApiErrorResponseData(userData.Item2, null, new KeyValuePair<string, string>("404", userData.Item3)));
 
-                return Ok(new ApiSuccessResponseData(userData.Item2, userData.Item1, new KeyValuePair<string, string>("200", userData.Item3)));
-            }
-            catch (Exception ex)
-            {
-                // return error message if there was an exception
-                return NotFound();
-            }
-        }
+        //        return Ok(new ApiSuccessResponseData(userData.Item2, userData.Item1, new KeyValuePair<string, string>("200", userData.Item3)));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // return error message if there was an exception
+        //        return NotFound();
+        //    }
+        //}
         #endregion
 
         #region GET
        
-        [HttpGet("getPatientsNotes")]
-        public IActionResult GetPatientsNotes([FromQuery]NoteResourceParameter notesData)
+        [HttpGet(Name = "GetPatientNotes")]
+        public IActionResult GetPatientNotes([FromQuery]NoteResourceParameter notesData)
         {
 
             try
@@ -190,11 +192,47 @@
                     return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
 
                 }
-                else
+
+                if (!_typeHelperService.TypeHasProperties<DC.OperatoryNotes>(notesData.Fields))
                 {
-                    IEnumerable<DC.OperatoryNotes> result = Mapper.Map<IEnumerable<DC.OperatoryNotes>>(_noteService.getNotes(notesData));
-                   //var OperatoryRepo = _noteService.getNotes(notesData);
-                    //var Operatory = Mapper.Map<IEnumerable<OperatoryNotes>>(OperatoryRepo);
+                    return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
+                }
+
+                var result = _noteService.getNotes(notesData);
+
+                    
+
+
+                    var prevPageLink = result.HasPrevious ?
+                CreateNoteResourceUri(notesData,
+                ResourceUriType.PreviousPage) : null;
+
+                    var nxtPageLink = result.HasNext ?
+                        CreateNoteResourceUri(notesData,
+                        ResourceUriType.NextPage) : null;
+
+                    var paginationMetadata = new
+                    {
+                        totalCount = result.TotalCount,
+                        pageSize = result.PageSize,
+                        currentPage = result.CurrentPage,
+                        totalPages = result.TotalPages,
+                        previousPageLink = prevPageLink,
+                        nextPageLink = nxtPageLink
+                    };
+
+                    Response.Headers.Add("X-Pagination",
+                        Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+
+
+                    // var orderByresult = result.OrderBy(x=>x.Equals(notesData.OrderBy));
+
+
+
+
+
+                    //var OperatoryRepo = _noteService.getNotes(notesData);
+                    // var Operatory = Mapper.Map<IEnumerable<OperatoryNotes>>(OperatoryRepo);
 
                     if ((result == null) || (result.Count() == 0))
                     {
@@ -210,8 +248,11 @@
 
 
                     }
-                    return Ok(result);
-                }
+                var noteMappedList = Mapper.Map<IEnumerable<OperatoryNotes>>(result);
+
+                return Ok(new ApiSuccessResponseData(true, noteMappedList.ShapeData(notesData.Fields), new KeyValuePair<string, string>("200","Success")));
+
+               
 
 
             }
@@ -226,14 +267,15 @@
         #endregion Methods
 
         [HttpPost("postInsertOrUpdatePatientsNotes")]
-        public IActionResult PostInsertUpdateOperatoryNotes(OperatoryNotesUpdateDto opNotesDto, int? autoNoteId)
+        public IActionResult PostInsertUpdateOperatoryNotes(OperatoryNotesUpdateDto opNotesDto, int? autoNoteId, string noteType)
         {
 
             var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
             //Checking whether the Note-Type is Contract-Note or not. Note-Type for Contract-Note is "N" 
             if (opNotesDto.note_type != "N")
             {
-                _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId);
+
+                _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, noteType);
                 return Ok();
 
             }

@@ -116,7 +116,7 @@ namespace Note.Services
                     || a.LastName.ToLowerInvariant().Contains(searchQueryForWhereClause));
             }
 
-            var pagedCollection = PagedList<User>.Create(collectionBeforePaging, pageparams.PageNumber, pageparams.PageSize);
+            var pagedCollection = new PagedList<User>(); //PagedList<User>.Create(collectionBeforePaging, pageparams.PageNumber, pageparams.PageSize);
 
             return Tuple.Create(pagedCollection, true, AlertMessages.User_Success);
         }

@@ -24,87 +24,43 @@ namespace Note.Services
             _propertyMappingService = propertyMappingService;
         }
 
-       
         #region ServiceMethods  
 
         /// <summary>
-        /// 
+        ///  Gets Operatory Notes based on parameters
         /// </summary>
         /// <param name="pageparams"></param>
-        /// <returns></returns>
-        public IEnumerable<operatory_notes> getNotes(NoteResourceParameter pageparams)
+        /// <returns> Get Operatory Notes data Based on ClinicID,PatientID,ProviderID</returns>
+        
+        #region Get ByID  
+        public PagedList<operatory_notes> getNotes(NoteResourceParameter pageparams)
         {
-            var operatoryNotes = _context.GetOperatoryNotesByPatientIdByClinicIDByProviderId(pageparams.OperatoryNoteRequest.PatientId, pageparams.OperatoryNoteRequest.ClinicId, pageparams.OperatoryNoteRequest.UserId);
+            var operatoryNotes = _context.GetOperatoryNotesByPatientIdByClinicIDByUserId(pageparams.OperatoryNoteRequest.PatientId, pageparams.OperatoryNoteRequest.ClinicId, pageparams.OperatoryNoteRequest.UserId, pageSize: pageparams.PageSize, currentPage: pageparams.PageNumber);
 
-            //var collectionBeforePaging = operatoryNotes.ApplySort(pageparams.OrderBy,
-            //    _propertyMappingService.GetPropertyMapping<DC.Responses.UserCreationResponse, User>());
+            var pagedCollection = PagedList<operatory_notes>.Create(operatoryNotes.Item1, pageparams.PageNumber, pageparams.PageSize, operatoryNotes.Item2);
 
-            // var lstNote = _context.GetOperatoryNotesByPatientIdByClinicIDByProviderId(PatientId,ClinicId,ProviderId);
-
-            //var collectionBeforePaging = _context.GetOperatoryNotesByPatientIdByClinicIDByProviderId(pageparams.patientId, pageparams.clinicId, pageparams.providerId)
-            //  .ApplySort(pageparams.OrderBy, _propertyMappingService.GetPropertyMapping<DC.OperatoryNotes, operatory_notes>());
-
-            // var collectionBeforePaging = _context.GetOperatoryNotesByPatientIdByClinicIDByProviderId(patientId,clinicId,providerId);
-
-
-
-            return operatoryNotes;
-            //return _context.order.operatoryNotes.Skip(NoteResourceParameter.PageSize
-            //    * (NoteResourceParameter.PageNumber-1))
-            //    .Take(NoteResourceParameter.PageSize)
-            //    .ToList(); 
-
+            return pagedCollection;
         }
 
-        //Insert or Update
-        public IEnumerable<operatory_notes> InsertOrUpdateNotes(operatory_notes operatoryNotes, int? autoNoteId)        {
+        #endregion Get ByID  
 
-            _context.InsertOrUpdateOperatoryNotes(operatoryNotes, autoNoteId);
+        /// <summary>
+        /// Insert or updates data into Operatory Notes 
+        /// </summary>
+        /// <param name="operatoryNotes"></param>
+        /// <param name="autoNoteId"></param>
+        /// <returns></returns>
+
+        #region InsertOrUpdateNotes  
+        public IEnumerable<operatory_notes> InsertOrUpdateNotes(operatory_notes operatoryNotes, int? autoNoteId, string noteType)        {
+
+            _context.InsertOrUpdateOperatoryNotes(operatoryNotes, autoNoteId,noteType);
 
             return null;
 
         }
+        #endregion InsertOrUpdateNotes  
 
-
-        public Tuple<PagedList<User>, bool, string> GetAll(UserResourceParameters pageparams)
-        {
-            var collectionBeforePaging =
-                _context.User
-                .ApplySort(pageparams.OrderBy,
-                _propertyMappingService.GetPropertyMapping<DC.Responses.UserCreationResponse, User>());
-
-            if (pageparams.Clinic > 0)
-            {
-                // trim & ignore casing
-                int clinicForWhereClause = pageparams.Clinic;
-                // collectionBeforePaging = collectionBeforePaging
-                //  .Where(a => a.ClinicId == clinicForWhereClause);
-            }
-
-            if (!string.IsNullOrEmpty(pageparams.SearchQuery))
-            {
-                // trim & ignore casing
-                var searchQueryForWhereClause = pageparams.SearchQuery
-                    .Trim().ToLowerInvariant();
-
-                collectionBeforePaging = collectionBeforePaging
-                    .Where(a => a.Username.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.FirstName.ToLowerInvariant().Contains(searchQueryForWhereClause)
-                    || a.LastName.ToLowerInvariant().Contains(searchQueryForWhereClause));
-            }
-
-            var pagedCollection = PagedList<User>.Create(collectionBeforePaging, pageparams.PageNumber, pageparams.PageSize);
-
-            return Tuple.Create(pagedCollection, true, AlertMessages.User_Success);
-        }
-
-        public Tuple<User, bool> GetById(string id)
-        {
-            return Tuple.Create(_context.User.SingleOrDefault(x => x.Id.Equals(id) && x.IsActive && x.LockoutEnabled), true);
-        }
-
-       
-       
         #endregion ServiceMethods
     }
 }

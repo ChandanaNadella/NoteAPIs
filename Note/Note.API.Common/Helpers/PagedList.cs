@@ -41,11 +41,9 @@
             AddRange(items);
         }
 
-        public static PagedList<T> Create(IQueryable<T> source, int pageNumber, int pageSize)
+        public static PagedList<T> Create(List<T> source, int pageNumber, int pageSize, int totalCount)
         {
-            var count = source.Count();
-            var items = source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-            return new PagedList<T>(items, count, pageNumber, pageSize);
+            return new PagedList<T>(source, totalCount, pageNumber, pageSize);
         }
     }
 }

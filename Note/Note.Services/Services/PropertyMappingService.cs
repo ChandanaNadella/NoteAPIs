@@ -27,12 +27,45 @@
                 { "FullName", new PropertyMappingValue(new List<string>() { "FullName"}) }
            };
 
+        private Dictionary<string, PropertyMappingValue> _notePropertyMapping =
+           new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
+           {
+               { "Id", new PropertyMappingValue(new List<string>() { "note_id" } ) },
+               { "CreatedDate", new PropertyMappingValue(new List<string>() { "Date_entered" } ) },
+               { "NoteClass", new PropertyMappingValue(new List<string>() { "note_class" } ) },
+               { "NoteType", new PropertyMappingValue(new List<string>() { "note_type" } ) },
+               { "NoteTypeId", new PropertyMappingValue(new List<string>() { "note_type_id" } ) },
+               { "Description", new PropertyMappingValue(new List<string>() { "description" } ) },
+               { "Note", new PropertyMappingValue(new List<string>() { "note" } ) },
+               { "Color", new PropertyMappingValue(new List<string>() { "color" } ) },
+               { "PostProcStatus", new PropertyMappingValue(new List<string>() { "post_proc_status" } ) },
+               { "ModifiedDate", new PropertyMappingValue(new List<string>() { "date_modified" } ) },
+               { "ModifiedBy", new PropertyMappingValue(new List<string>() { "modified_by" } ) },
+               { "LockedEod", new PropertyMappingValue(new List<string>() { "locked_eod" } ) },
+               { "Status", new PropertyMappingValue(new List<string>() { "status" } ) },
+               { "ToothData", new PropertyMappingValue(new List<string>() { "tooth_data" } ) },
+               { "ClaimID", new PropertyMappingValue(new List<string>() { "claim_id" } ) },
+               { "StatementYn", new PropertyMappingValue(new List<string>() { "statement_yn" } ) },
+               { "RespPartyId", new PropertyMappingValue(new List<string>() { "resp_party_id" } ) },
+               { "Tooth", new PropertyMappingValue(new List<string>() { "tooth" } ) },
+               { "TranNum", new PropertyMappingValue(new List<string>() { "tran_num" } ) },
+               { "ArchiveName", new PropertyMappingValue(new List<string>() { "archive_name" } ) },
+               { "ArchivePath", new PropertyMappingValue(new List<string>() { "archive_path" } ) },
+               { "ServiceCode", new PropertyMappingValue(new List<string>() { "service_code" } ) },
+               { "ClinicID", new PropertyMappingValue(new List<string>() { "practice_id" } ) },
+               { "Freshness", new PropertyMappingValue(new List<string>() { "freshness" } ) },
+               { "SurfaceDetail", new PropertyMappingValue(new List<string>() { "surface_detail" } ) },
+               { "Surface", new PropertyMappingValue(new List<string>() { "surface" } ) },
+
+           };
+
         private IList<IPropertyMapping> propertyMappings = new List<IPropertyMapping>();
 
         public PropertyMappingService()
         {
             propertyMappings.Add(new PropertyMapping<DC.Responses.UserCreationResponse, R.User>(_userPropertyMapping));
             propertyMappings.Add(new PropertyMapping<DC.Responses.SubscriberCreationResponse, R.Subscriber>(_subscriberPropertyMapping));
+            propertyMappings.Add(new PropertyMapping<DC.OperatoryNotes, R.operatory_notes>(_notePropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()

@@ -9,8 +9,9 @@
         [Required]
         public int note_id { set; get; }
 
-       
-
+        /// <summary>
+        ///Patient table data.
+        /// </summary>
         #region Patient's Details
 
         [Required]
@@ -27,7 +28,9 @@
 
         #endregion Patient's Details
 
-
+        /// <summary>
+        ///Provider table data.
+        /// </summary>
         #region Provider's Details
 
         [Required]

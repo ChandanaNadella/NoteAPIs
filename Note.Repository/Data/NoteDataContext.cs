@@ -13,154 +13,123 @@
         public string ConnectionString { get; set; }
         public string ConnectionPath = SettingsExtensions.DBConnectionString;
 
+        /// <summary>
+        /// Get's OperatoryNotes based on PatientId, ClinicId, UserId passing from the front end
+        /// </summary>
+        /// <param name="patientId"></param>
+        /// <param name="clinicId"></param>
+        /// <param name="UserId"></param>
+        /// <returns>OperatoryNotes table filtered by PatientId, ClinicId, UserId</returns>
+        #region GetOperatoryNotes
+        public Tuple<List<operatory_notes>, int> GetOperatoryNotesByPatientIdByClinicIDByUserId(string patientId, string clinicId, string UserId, int? pageSize, int currentPage = 1)
 
-        public IEnumerable<operatory_notes> GetOperatoryNotes()
         {
             List<operatory_notes> lstNotes = new List<operatory_notes>();
-
+            int totalCount = 0;
 
             using (OdbcConnection con = new OdbcConnection(ConnectionPath))
-
             {
-                OdbcCommand cmd = new OdbcCommand("select * from operatory_notes", con);
-                con.Open();
-                OdbcDataReader rdr = cmd.ExecuteReader();
 
-                while (rdr.Read())
+
+                string query1 = string.Format(@"SELECT Count(*) as totalCount FROM operatory_notes o_n INNER JOIN patient p ON o_n.patient_Id=p.patient_Id
+INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0}' AND  o_n.practice_id= '{1}' AND  o_n.user_id= '{2}'", patientId, clinicId, UserId);
+
+                OdbcCommand cmd1 = new OdbcCommand(query1, con);
+
+
+                string pagination = "";
+                if (pageSize.HasValue)
                 {
-
-                    operatory_notes on = new operatory_notes();
-
-                    #region Operatory Data Table
-
-                    on.note_id = Convert.ToInt32(rdr["note_id"]);
-                    on.Date_entered = Convert.ToDateTime(rdr["Date_entered"]);
-                    on.note_class = Convert.ToChar(rdr["note_class"]);
-                    on.note_type = rdr["note_type"].ToString();
-                    on.note_type_id = Convert.ToInt32(rdr["note_type_id"]);
-                    on.description = rdr["description"].ToString();
-                    on.note = rdr["note"].ToString();
-                    on.color = Convert.ToInt32(rdr["color"]);
-                    on.post_proc_status = Convert.ToChar(rdr["post_proc_status"]);
-                    on.date_modified = rdr["date_modified"].ToString();
-                    on.modified_by = rdr["modified_by"].ToString();
-                    on.locked_eod = Convert.ToInt32(rdr["locked_eod"]);
-                    on.status = Convert.ToChar(rdr["status"]);
-                    on.tooth_data = rdr["tooth_data"].ToString();
-                    on.claim_id = Convert.ToInt32(rdr["claim_id"]);
-                    on.statement_yn = Convert.ToChar(rdr["statement_yn"]);
-                    on.resp_party_id = rdr["resp_party_id"].ToString();
-                    on.tooth = rdr["tooth"].ToString();
-                    on.tran_num = Convert.ToInt32(rdr["tran_num"]);
-                    on.archive_name = rdr["archive_name"].ToString();
-                    on.archive_path = rdr["archive_path"].ToString();
-                    on.service_code = rdr["service_code"].ToString();
-                    on.practice_id = Convert.ToInt16(rdr["practice_id"]);
-                    on.freshness = Convert.ToDateTime(rdr["freshness"]);
-                    on.surface_detail = rdr["surface_detail"].ToString();
-                    on.surface = rdr["surface"].ToString();
-
-                    #endregion Operatory Data Table
-
-
-                    #region Provider Data Table
-
-                    on.provider_id = rdr["user_id"].ToString();
-                    on.first_name = rdr["first_name"].ToString();
-                    on.last_name = rdr["last_name"].ToString();
-
-                    #endregion Provider Data Table
-
-                    lstNotes.Add(on);
-
+                    pagination = string.Format("Top {0} start at(({0}*{1}+1)-{0})", pageSize, currentPage);
                 }
-                con.Close();
-            }
-            return (lstNotes);
-        }
-        public IEnumerable<operatory_notes> GetOperatoryNotesByPatientIdByClinicIDByProviderId( string patientId, string clinicId, string UserId)
 
-        {
-            List<operatory_notes> lstNotes = new List<operatory_notes>();
-            using (OdbcConnection con = new OdbcConnection(ConnectionPath))
-            {
+                string query2 = string.Format(@"SELECT {0} p.first_name as patientFirstName,p.last_name as patientLastName,pr.first_name ,pr.last_name ,* FROM operatory_notes o_n INNER JOIN patient p ON o_n.patient_Id=p.patient_Id
+INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{1}' AND  o_n.practice_id= '{2}' AND  o_n.user_id= '{3}' order by o_n.date_entered desc", pagination, patientId, clinicId, UserId);
 
-                string query2 = string.Format(@"SELECT  p.first_name as patientFirstName,p.last_name as patientLastName,pr.first_name ,pr.last_name ,* FROM operatory_notes o_n INNER JOIN patient p ON o_n.patient_Id=p.patient_Id
-INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0}' AND  o_n.practice_id= '{1}' AND  o_n.user_id= '{2}' order by o_n.date_entered desc", patientId, clinicId, UserId);
+                OdbcCommand cmd2 = new OdbcCommand(query2, con);
 
-                OdbcCommand cmd = new OdbcCommand(query2, con);
+
 
                 con.Open();
 
-                OdbcDataReader rdr = cmd.ExecuteReader();
+                OdbcDataReader rdr1 = cmd1.ExecuteReader();
 
-                while (rdr.Read())
+                while (rdr1.Read())
+                {
+                    totalCount = Convert.ToInt32(rdr1["totalCount"]);
+                }
+
+                OdbcDataReader rdr2 = cmd2.ExecuteReader();
+
+                while (rdr2.Read())
                 {
 
                     operatory_notes on = new operatory_notes();
 
                     #region Operatory Data Table
 
-                    on.note_id = Convert.ToInt32(rdr["note_id"]);
-                    on.Date_entered = Convert.ToDateTime(rdr["Date_entered"]);
-                    on.note_class = Convert.ToChar(rdr["note_class"]);
-                    on.note_type = rdr["note_type"].ToString();
-                    on.note_type_id = Convert.ToInt32(rdr["note_type_id"]);
-                    on.description = rdr["description"].ToString();
-                    on.note = rdr["note"].ToString();
-                    on.color = Convert.ToInt32(rdr["color"]);
-                    on.post_proc_status = Convert.ToChar(rdr["post_proc_status"]);
-                    on.date_modified = rdr["date_modified"].ToString();
-                    on.modified_by = rdr["modified_by"].ToString();
-                    on.locked_eod = Convert.ToInt32(rdr["locked_eod"]);
-                    on.status = Convert.ToChar(rdr["status"]);
-                    on.tooth_data = rdr["tooth_data"].ToString();
-                    on.claim_id = Convert.ToInt32(rdr["claim_id"]);
-                    on.statement_yn = Convert.ToChar(rdr["statement_yn"]);
-                    on.resp_party_id = rdr["resp_party_id"].ToString();
-                    on.tooth = rdr["tooth"].ToString();
-                    on.tran_num = Convert.ToInt32(rdr["tran_num"]);
-                    on.archive_name = rdr["archive_name"].ToString();
-                    on.archive_path = rdr["archive_path"].ToString();
-                    on.service_code = rdr["service_code"].ToString();
-                    on.practice_id = Convert.ToInt16(rdr["practice_id"]);
-                    on.freshness = Convert.ToDateTime(rdr["freshness"]);
-                    on.surface_detail = rdr["surface_detail"].ToString();
-                    on.surface = rdr["surface"].ToString();
+                    on.note_id = Convert.ToInt32(rdr2["note_id"]);
+                    on.Date_entered = Convert.ToDateTime(rdr2["Date_entered"]);
+                    on.note_class = Convert.ToChar(rdr2["note_class"]);
+                    on.note_type = rdr2["note_type"].ToString();
+                    on.note_type_id = Convert.ToInt32(rdr2["note_type_id"]);
+                    on.description = rdr2["description"].ToString();
+                    on.note = rdr2["note"].ToString();
+                    on.color = Convert.ToInt32(rdr2["color"]);
+                    on.post_proc_status = Convert.ToChar(rdr2["post_proc_status"]);
+                    on.date_modified = rdr2["date_modified"].ToString();
+                    on.modified_by = rdr2["modified_by"].ToString();
+                    on.locked_eod = Convert.ToInt32(rdr2["locked_eod"]);
+                    on.status = Convert.ToChar(rdr2["status"]);
+                    on.tooth_data = rdr2["tooth_data"].ToString();
+                    on.claim_id = Convert.ToInt32(rdr2["claim_id"]);
+                    on.statement_yn = Convert.ToChar(rdr2["statement_yn"]);
+                    on.resp_party_id = rdr2["resp_party_id"].ToString();
+                    on.tooth = rdr2["tooth"].ToString();
+                    on.tran_num = Convert.ToInt32(rdr2["tran_num"]);
+                    on.archive_name = rdr2["archive_name"].ToString();
+                    on.archive_path = rdr2["archive_path"].ToString();
+                    on.service_code = rdr2["service_code"].ToString();
+                    on.practice_id = Convert.ToInt16(rdr2["practice_id"]);
+                    on.freshness = Convert.ToDateTime(rdr2["freshness"]);
+                    on.surface_detail = rdr2["surface_detail"].ToString();
+                    on.surface = rdr2["surface"].ToString();
 
                     #endregion Operatory Data Table
 
                     #region Patient Data Table
 
-                    on.patient_id = rdr["patient_id"].ToString();
-                    on.patientFirstName = rdr["patientFirstName"].ToString();
-                    on.patientLastName = rdr["patientLastName"].ToString();
+                    on.patient_id = rdr2["patient_id"].ToString();
+                    on.patientFirstName = rdr2["patientFirstName"].ToString();
+                    on.patientLastName = rdr2["patientLastName"].ToString();
 
                     #endregion Patient Data Table
 
                     #region Provider Data Table
 
-                    on.provider_id = rdr["user_id"].ToString();
-                    on.first_name = rdr["first_name"].ToString();
-                    on.last_name = rdr["last_name"].ToString();
+                    on.provider_id = rdr2["user_id"].ToString();
+                    on.first_name = rdr2["first_name"].ToString();
+                    on.last_name = rdr2["last_name"].ToString();
 
                     #endregion Provider Data Table
                     lstNotes.Add(on);
-                    on.surface = rdr["surface"].ToString();
+                    on.surface = rdr2["surface"].ToString();
                 }
                 con.Close();
             }
-            return lstNotes;
+            return Tuple.Create(lstNotes, totalCount);
         }
 
 
+        #endregion GetOperatoryNotes
 
-
-        
         /// <summary>
         /// Insert or Update Notes basedon the autoNoteId passing from the front end or not
         /// </summary>
-        public void InsertOrUpdateOperatoryNotes(operatory_notes operatoryNotes, int? autoNoteId)
+        /// <param name="operatoryNotes"></param>
+        /// <param name="autoNoteId"></param>
+        #region InsertOrUpdateOperatoryNotes
+        public void InsertOrUpdateOperatoryNotes(operatory_notes operatoryNotes, int? autoNoteId , string noteType)
         {
 
             using (OdbcConnection con = new OdbcConnection(ConnectionPath))
@@ -170,18 +139,32 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
 
                 if (autoNoteId != null)
                 {
-                    string query = string.Format(@"Select description,note_text from autonotes where note_id='{0}'", autoNoteId);
+                    string query = string.Format(@"Select note_text, description from autonotes where note_id='{0}'", autoNoteId);
+                    //string querydesc = string.Format( @"Select description from operatory_notes_type  where note_type='{0}'", noteType);
                     OdbcCommand cmd1 = new OdbcCommand(query, con);
+                    //OdbcCommand cmd5 = new OdbcCommand(querydesc, con);
                     con.Open();
                     OdbcDataReader rdr = cmd1.ExecuteReader();
-                    while (rdr.Read())
+                    //OdbcDataReader rdr1 = cmd5.ExecuteReader();
+
+                    //while (rdr1.Read())
+                    //{
+                    //    operatory_notes on = new operatory_notes();
+
+                    //    on.description = rdr1["description"].ToString();
+
+                    //}
+
+                        while (rdr.Read())
                     {
-                        operatory_notes on = new operatory_notes();
-                        on.description = rdr["description"].ToString();
+                        operatory_notes on = new operatory_notes();                     
                         on.note = rdr["note_text"].ToString();
+                        on.description = rdr["description"].ToString();
+
+
                         // If AutoNote Id is passing from the FrontEnd to an Existing Note.
 
-                        if (operatoryNotes.note_id != 0)
+                        if (operatoryNotes.note_id != 0 && operatoryNotes.note_type != "N")
                         {
                             // Note class should be always T
                             string query1 = string.Format(@"Update 
@@ -233,7 +216,6 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                             cmd.Parameters.AddWithValue("?", operatoryNotes.surface);
 
                             cmd.ExecuteNonQuery();
-                           // con.Close();
 
                         }
 
@@ -245,7 +227,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                 else
                 {
 
-                        if (operatoryNotes.note_id != 0)
+                        if (operatoryNotes.note_id != 0 && operatoryNotes.note_type != "N")
                     {
                         con.Open();
                         // Note class should be always T
@@ -305,14 +287,10 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                
            
             }
-
         }
+        #endregion InsertOrUpdateOperatoryNotes
 
-
-
-
-
-
+        // The Db Context class which acts as bridge between entity classes and database
         public NoteDataContext()
         {
         }
@@ -329,7 +307,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
 
         public DbSet<Clinic> Clinic { get; set; }
         public DbSet<category> Category { get; set; }
-       
+
 
     }
 }

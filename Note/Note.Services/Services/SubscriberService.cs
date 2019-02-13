@@ -65,7 +65,7 @@
                     .Where(a => a.FullName.ToLowerInvariant().Contains(searchQueryForWhereClause));
             }
 
-            var pagedCollection = PagedList<Subscriber>.Create(collectionBeforePaging, pageparams.PageNumber, pageparams.PageSize);
+            var pagedCollection = new PagedList<Subscriber>();//PagedList<Subscriber>.Create(collectionBeforePaging, pageparams.PageNumber, pageparams.PageSize);
 
             return Tuple.Create(pagedCollection, true, AlertMessages.Subscriber_Success);
         }
