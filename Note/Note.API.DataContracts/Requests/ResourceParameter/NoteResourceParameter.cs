@@ -25,7 +25,10 @@
         public OperatoryNotesRequest OperatoryNoteRequest { get; set; }
 
         public string SearchQuery { get; set; }
-        public string OrderBy { get; set; } = "Name";
+
+        public string OrderBy { get; set; } = "note_id";
+
+        public bool Order { get; set; } 
 
         public string Fields { get; set; }
     }

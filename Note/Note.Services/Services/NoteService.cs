@@ -35,7 +35,13 @@ namespace Note.Services
         #region Get ByID  
         public PagedList<operatory_notes> getNotes(NoteResourceParameter pageparams)
         {
-            var operatoryNotes = _context.GetOperatoryNotesByPatientIdByClinicIDByUserId(pageparams.OperatoryNoteRequest.PatientId, pageparams.OperatoryNoteRequest.ClinicId, pageparams.OperatoryNoteRequest.UserId, pageSize: pageparams.PageSize, currentPage: pageparams.PageNumber);
+        //    var collectionBeforePaging =
+        //       _context.operatory_notes
+        //       .ApplySort(pageparams.OrderBy,
+        //       _propertyMappingService.GetPropertyMapping<DC.OperatoryNotes, operatory_notes>());
+        //    //string value =;
+
+            var operatoryNotes = _context.GetOperatoryNotesByPatientIdByClinicIDByUserId(pageparams.OperatoryNoteRequest.PatientId, pageparams.OperatoryNoteRequest.ClinicId, pageparams.OperatoryNoteRequest.UserId, OrderBy: pageparams.OrderBy, Order: pageparams.Order, pageSize: pageparams.PageSize, currentPage: pageparams.PageNumber);
 
             var pagedCollection = PagedList<operatory_notes>.Create(operatoryNotes.Item1, pageparams.PageNumber, pageparams.PageSize, operatoryNotes.Item2);
 

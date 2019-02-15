@@ -31,7 +31,9 @@
            new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
            {
                { "Id", new PropertyMappingValue(new List<string>() { "note_id" } ) },
+              // { "Patient.PatientId", new PropertyMappingValue(new List<string>() { "patient_id" } ) },
                { "CreatedDate", new PropertyMappingValue(new List<string>() { "Date_entered" } ) },
+              // { "Provider.ProviderId", new PropertyMappingValue(new List<string>() { "user_id" } ) },
                { "NoteClass", new PropertyMappingValue(new List<string>() { "note_class" } ) },
                { "NoteType", new PropertyMappingValue(new List<string>() { "note_type" } ) },
                { "NoteTypeId", new PropertyMappingValue(new List<string>() { "note_type_id" } ) },
@@ -66,6 +68,8 @@
             propertyMappings.Add(new PropertyMapping<DC.Responses.UserCreationResponse, R.User>(_userPropertyMapping));
             propertyMappings.Add(new PropertyMapping<DC.Responses.SubscriberCreationResponse, R.Subscriber>(_subscriberPropertyMapping));
             propertyMappings.Add(new PropertyMapping<DC.OperatoryNotes, R.operatory_notes>(_notePropertyMapping));
+            //propertyMappings.Add(new PropertyMapping<DC.Patient, R.operatory_notes>(_notePropertyMapping));
+            //propertyMappings.Add(new PropertyMapping<DC.Provider, R.operatory_notes>(_notePropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()

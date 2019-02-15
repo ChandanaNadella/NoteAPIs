@@ -272,17 +272,19 @@
 
             var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
             //Checking whether the Note-Type is Contract-Note or not. Note-Type for Contract-Note is "N" 
-            if (opNotesDto.note_type != "N")
-            {
 
-                _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, noteType);
-                return Ok();
-
+            if (noteType != null || noteType =="")
+            { 
+                  _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, noteType);
+                return Ok(new ApiSuccessResponseData(true, opNotesDto, new KeyValuePair<string, string>("200", "Success")));
+               
             }
+
+          
             //If the Note-Type is Contract-Note or Note-Type="N"
             else
             {
-                return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request, Note-Type should not be a Contract-Note")));
+                return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request, Note-Type is required")));
             }
            
 

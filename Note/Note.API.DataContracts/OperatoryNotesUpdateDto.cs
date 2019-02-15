@@ -17,11 +17,11 @@ namespace Note.API.DataContracts
 
         public char note_class { set; get; }
 
-        public string note_type { set; get; }
+       // public string note_type { set; get; }
 
-        public int note_type_id { set; get; }
+       // public int note_type_id { set; get; }
 
-        public string description { set; get; }
+       // public string description { set; get; }
 
         public string note { set; get; }
 
