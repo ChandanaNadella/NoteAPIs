@@ -186,7 +186,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
 
 
                                 string query1 = string.Format(@"Update 
-                                        operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}',user_id='{3}',description='{4}',  note = note +','+'{5}',note_class='{6}' 
+                                        operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}',freshness = '{2}', user_id='{3}',description='{4}',  note = note +','+'{5}',note_class='{6}' 
                                        where note_id ='{7}' AND patient_id ='{8}' AND  practice_id= '{9}' AND  user_id= '{3}'", opn.note_type_id, opn.note_type,
                                          dateTimeNow, operatoryNotes.user_id, opn.description, on.note + operatoryNotes.note, "T", operatoryNotes.note_id,
                                           operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
@@ -217,7 +217,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
 
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.color);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.post_proc_status);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.date_modified);
+                                cmd.Parameters.AddWithValue("?", dateTimeNow);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.modified_by);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.locked_eod);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.status);
@@ -231,7 +231,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.archive_path);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.service_code);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.practice_id);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.freshness);
+                                cmd.Parameters.AddWithValue("?", dateTimeNow);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.surface_detail);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.surface);
 
@@ -269,7 +269,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                             // Note class should be always T
                             //    string query3 = string.Format(@"Update operatory_notes SET date_modified = '{0}',user_id='{1}', note = note +','+'{2}', note_class='{3}'  where note_id ='{4}' AND patient_id ='{5}' AND  practice_id= '{6}' AND  user_id= '{7}'",
                             //dateTimeNow, operatoryNotes.user_id, operatoryNotes.note, "T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
-                            string query3 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}',user_id='{3}',description='{4}', note = note +','+'{5}', note_class='{6}'  where note_id ='{7}' AND patient_id ='{8}' AND  practice_id= '{9}' AND  user_id= '{3}'",
+                            string query3 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}', note = note +','+'{5}', note_class='{6}'  where note_id ='{7}' AND patient_id ='{8}' AND  practice_id= '{9}' AND  user_id= '{3}'",
                                  opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.note, "T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
 
 
@@ -300,7 +300,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
 
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.color);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.post_proc_status);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.date_modified);
+                            cmd4.Parameters.AddWithValue("?", dateTimeNow);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.modified_by);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.locked_eod);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.status);
@@ -314,7 +314,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.archive_path);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.service_code);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.practice_id);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.freshness);
+                            cmd4.Parameters.AddWithValue("?", dateTimeNow);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.surface_detail);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.surface);
 

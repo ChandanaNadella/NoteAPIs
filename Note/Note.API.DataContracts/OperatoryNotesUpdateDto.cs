@@ -13,6 +13,7 @@ namespace Note.API.DataContracts
 
         public DateTime Date_entered { set; get; }
 
+     
         public string user_id { set; get; }
 
         public char note_class { set; get; }
@@ -29,7 +30,7 @@ namespace Note.API.DataContracts
 
         public char post_proc_status { set; get; }
 
-        public String date_modified { set; get; }
+        public string date_modified { set; get; }
 
         public string modified_by { set; get; }
 
