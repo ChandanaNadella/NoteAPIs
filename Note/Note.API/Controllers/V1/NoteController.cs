@@ -271,7 +271,7 @@
         {
 
             var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
-            //Checking whether the Note-Type is Contract-Note or not. Note-Type for Contract-Note is "N" 
+            
 
             if (noteType != null || noteType =="")
             { 
@@ -281,7 +281,7 @@
             }
 
           
-            //If the Note-Type is Contract-Note or Note-Type="N"
+           
             else
             {
                 return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request, Note-Type is required")));

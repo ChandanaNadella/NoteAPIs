@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Note.API.DataContracts.Requests;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -7,13 +8,15 @@ namespace Note.API.DataContracts
 {
    public class OperatoryNotesUpdateDto
     {
+
         public int note_id { set; get; }
 
+        [CustomError(ErrorMessage = "Patient Id is Required Field")]
         public string patient_id { set; get; }
 
         public DateTime Date_entered { set; get; }
 
-     
+        [CustomError(ErrorMessage = "Provider/user Id is Required Field")]
         public string user_id { set; get; }
 
         public char note_class { set; get; }
@@ -56,6 +59,7 @@ namespace Note.API.DataContracts
 
         public string service_code { set; get; }
 
+        [CustomError(ErrorMessage = "Practice Id is Required Field")]
         public short practice_id { set; get; }
 
         public DateTime freshness { set; get; }
