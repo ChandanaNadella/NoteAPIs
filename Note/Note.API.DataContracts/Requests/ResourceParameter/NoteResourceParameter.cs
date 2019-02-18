@@ -26,9 +26,7 @@
 
         public string SearchQuery { get; set; }
 
-        public string OrderBy { get; set; } = "note_id";
-
-        public bool Order { get; set; } 
+        public string OrderBy { get; set; } = "DateEntered desc";
 
         public string Fields { get; set; }
     }

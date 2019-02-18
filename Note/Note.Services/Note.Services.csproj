@@ -21,4 +21,10 @@
     <ProjectReference Include="..\Note.IoC.Configuration\Note.IoC.Configuration.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="EaglesoftSettings">
+      <HintPath>..\..\..\..\..\..\..\EagleSoft\Shared Files\EaglesoftSettings.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

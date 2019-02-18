@@ -65,11 +65,7 @@
 
         public PropertyMappingService()
         {
-            propertyMappings.Add(new PropertyMapping<DC.Responses.UserCreationResponse, R.User>(_userPropertyMapping));
-            propertyMappings.Add(new PropertyMapping<DC.Responses.SubscriberCreationResponse, R.Subscriber>(_subscriberPropertyMapping));
             propertyMappings.Add(new PropertyMapping<DC.OperatoryNotes, R.operatory_notes>(_notePropertyMapping));
-            //propertyMappings.Add(new PropertyMapping<DC.Patient, R.operatory_notes>(_notePropertyMapping));
-            //propertyMappings.Add(new PropertyMapping<DC.Provider, R.operatory_notes>(_notePropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping
             <TSource, TDestination>()

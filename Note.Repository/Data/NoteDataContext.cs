@@ -21,7 +21,7 @@
         /// <param name="UserId"></param>
         /// <returns>OperatoryNotes table filtered by PatientId, ClinicId, UserId</returns>
         #region GetOperatoryNotes
-        public Tuple<List<operatory_notes>, int> GetOperatoryNotesByPatientIdByClinicIDByUserId(string patientId, string clinicId, string UserId, bool Order, string OrderBy, int? pageSize, int currentPage = 1)
+        public Tuple<List<operatory_notes>, int> GetOperatoryNotesByPatientIdByClinicIDByUserId(string patientId, string clinicId, string UserId, string OrderBy, int? pageSize, int currentPage = 1)
 
         {
             List<operatory_notes> lstNotes = new List<operatory_notes>();
@@ -43,17 +43,8 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                     pagination = string.Format("Top {0} start at(({0}*{1}+1)-{0})", pageSize, currentPage);
                 }
                
-                string Sorting = "asc";
-                if (Order)
-                {
-                    Sorting ="desc";
-                }
                 
-                
-              string query2 = string.Format(@"SELECT {0} p.first_name as patientFirstName,p.last_name as patientLastName,pr.first_name ,pr.last_name ,* 
-                                              FROM operatory_notes o_n INNER JOIN patient p ON o_n.patient_Id=p.patient_Id
-                                              INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{1}' AND  o_n.practice_id= '{2}'
-                                             AND  o_n.user_id= '{3}' order by o_n.date_entered desc, o_n.{4} {5}", pagination, patientId, clinicId, UserId, OrderBy, Sorting);
+              string query2 = string.Format(@"SELECT {0} p.first_name as patientFirstName,p.last_name as patientLastName,pr.first_name ,pr.last_name ,* FROM operatory_notes o_n INNER JOIN patient p ON o_n.patient_Id=p.patient_Id INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{1}' AND  o_n.practice_id= '{2}'AND  o_n.user_id= '{3}' order by {4}", pagination, patientId, clinicId, UserId, OrderBy);
 
                 OdbcCommand cmd2 = new OdbcCommand(query2, con);
 
@@ -128,6 +119,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                 }
                 con.Close();
             }
+
             return Tuple.Create(lstNotes, totalCount);
         }
 
@@ -186,9 +178,10 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
 
 
                                 string query1 = string.Format(@"Update 
-                                        operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}',freshness = '{2}', user_id='{3}',description='{4}',  note = note +','+'{5}',note_class='{6}' 
-                                       where note_id ='{7}' AND patient_id ='{8}' AND  practice_id= '{9}' AND  user_id= '{3}'", opn.note_type_id, opn.note_type,
-                                         dateTimeNow, operatoryNotes.user_id, opn.description, on.note + operatoryNotes.note, "T", operatoryNotes.note_id,
+                                        operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}',freshness = '{2}', user_id='{3}',description='{4}', color= '{5}',tooth='{6},surface='{7}'
+                                    note = note +','+'{8}',note_class='{9}' 
+                                       where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'", opn.note_type_id, opn.note_type,
+                                         dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.color, operatoryNotes.tooth, operatoryNotes.surface, on.note + operatoryNotes.note, "T", operatoryNotes.note_id,
                                           operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
 
                                 OdbcCommand cmd2 = new OdbcCommand(query1, con);
@@ -345,14 +338,6 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
             : base(options)
         {
         }
-
-        public virtual DbSet<NewPatient> NewPatient { get; set; }
-        public DbSet<User> User { get; set; }
-
-        public DbSet<Subscriber> Subscriber { get; set; }
-
-        public DbSet<Clinic> Clinic { get; set; }
-        public DbSet<category> Category { get; set; }
 
         public DbSet<operatory_notes> operatory_notes { get; set; }
 

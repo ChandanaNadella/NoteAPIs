@@ -21,7 +21,9 @@ namespace Note.API.DataContracts
 
         public char note_class { set; get; }
 
-       // public string note_type { set; get; }
+
+        [CustomError(ErrorMessage = "Note type is Required Field")]
+        public string note_type { set; get; }
 
        // public int note_type_id { set; get; }
 

@@ -57,6 +57,12 @@
             _typeHelperService = typeHelperService;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="paginationResourceParameters"></param>
+        /// <param name="type"></param>
+        /// <returns></returns>
 
         #region Utilities
         private string CreateNoteResourceUri(NoteResourceParameter paginationResourceParameters, ResourceUriType type)
@@ -110,75 +116,10 @@
         #region Methods
 
 
-        #region POST
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="userDto"></param>
-        /// <returns></returns>
-        //[AllowAnonymous]
-        //[HttpPost("authenticate")]
-        //public IActionResult Authenticate([FromBody]UserCredentials userDto)
-        //{
-        //    var user = Mapper.Map<Tuple<RP.User, bool, string>, Tuple<DC.User, bool, string>>(_userService.Authenticate(userDto.Username, userDto.Password));
-
-        //    if (!user.Item2)
-        //    {
-        //        switch (user.Item3)
-        //        {
-        //            case AlertMessages.User_Doesnot_Exits:
-        //                return NotFound(new ApiErrorResponseData(user.Item2, null, new KeyValuePair<string, string>("404", user.Item3)));
-        //            case AlertMessages.Username_Password_Empty:
-        //                return BadRequest(new ApiErrorResponseData(user.Item2, null, new KeyValuePair<string, string>("400", user.Item3)));
-        //            case AlertMessages.Password_Incorrect:
-        //                return BadRequest(new ApiErrorResponseData(user.Item2, null, new KeyValuePair<string, string>("400", user.Item3)));
-        //        }
-        //    }
-
-        //    JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-        //    byte[] key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-
-        //    var tokenDescriptor = new SecurityTokenDescriptor
-        //    {
-        //        Subject = new ClaimsIdentity(new Claim[]
-        //        {
-        //            new Claim(ClaimTypes.Name, user.Item1.Id.ToString())
-        //        }),
-        //        Expires = DateTime.UtcNow.AddHours(10),
-        //        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        //    };
-
-        //    var token = tokenHandler.CreateToken(tokenDescriptor);
-        //    var tokenString = tokenHandler.WriteToken(token);
-        //    user.Item1.Token = tokenString;
-
-        //    // return basic user info (without password) and token to store client side
-        //    return Ok(new ApiSuccessResponseData(user.Item2, user.Item1, new KeyValuePair<string, string>("200", user.Item3)));
-        //}
-
-        //[HttpPost("register")]
-        //[AllowAnonymous]
-        //public IActionResult Register([FromBody]DC.Requests.UserCreationRequest user)
-        //{
-        //    try
-        //    {
-        //        // save 
-        //        Tuple<RP.User, bool, string> userData = _userService.Create(user);
-
-        //        if (!userData.Item2) return NotFound(new ApiErrorResponseData(userData.Item2, null, new KeyValuePair<string, string>("404", userData.Item3)));
-
-        //        return Ok(new ApiSuccessResponseData(userData.Item2, userData.Item1, new KeyValuePair<string, string>("200", userData.Item3)));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // return error message if there was an exception
-        //        return NotFound();
-        //    }
-        //}
-        #endregion
+        
 
         #region GET
-       
+
         [HttpGet(Name = "GetPatientNotes")]
         public IActionResult GetPatientNotes([FromQuery]NoteResourceParameter notesData)
         {
@@ -263,34 +204,51 @@
             return null; 
 
         }
+
+
+        #endregion
+        #region POST
+
+        [HttpPost(Name = "PostInsertUpdateOperatoryNotes")]
+        public IActionResult PostInsertUpdateOperatoryNotes(OperatoryNotesUpdateDto opNotesDto, int? autoNoteId)
+        {
+
+
+
+            var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
+
+
+            if (opNotesDto.note_type != null || opNotesDto.note_type == "")
+            {
+                _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, opNotesDto.note_type);
+                return Ok(new ApiSuccessResponseData(true, opNotesDto, new KeyValuePair<string, string>("200", "Success")));
+
+            }
+
+
+
+            else
+            {
+                string filePath = @"..\Note.API.Common\ErrorLogs\Error.txt";
+                using (StreamWriter writer = new StreamWriter(filePath, true))
+                {
+                    writer.WriteLine("Date : " + DateTime.Now.ToString());
+                    writer.WriteLine("Error Status Code: 400, Bad Request");
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                }
+
+
+                return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
+            }
+
+
+        }
         #endregion
         #endregion Methods
 
-        [HttpPost("postInsertOrUpdatePatientsNotes")]
-        public IActionResult PostInsertUpdateOperatoryNotes(OperatoryNotesUpdateDto opNotesDto, int? autoNoteId, string noteType)
-        {
 
-            var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
-            
-
-            if (noteType != null || noteType =="")
-            { 
-                  _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, noteType);
-                return Ok(new ApiSuccessResponseData(true, opNotesDto, new KeyValuePair<string, string>("200", "Success")));
-               
-            }
-
-          
-           
-            else
-            {
-                return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request, Note-Type is required")));
-            }
-           
-
-        }
 
     }
-   
-    
+
+
 }

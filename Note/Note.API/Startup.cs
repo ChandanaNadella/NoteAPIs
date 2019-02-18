@@ -26,6 +26,7 @@
     using Note.Repository.Data;
     using Note.Services;
     using Note.Services.Contracts;
+    using Note.Services.Services;
     using Swashbuckle.AspNetCore.Swagger;
     using System.IO;
     using System.Reflection;
@@ -123,14 +124,14 @@
                {
                    OnTokenValidated = context =>
                    {
-                       var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
+                      // var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
                        var userId = context.Principal.Identity.Name;
-                       var user = userService.GetById(userId);
-                       if (user.Item1 == null)
-                       {
-                           // return unauthorized if user no longer exists
-                           context.Fail("Unauthorized");
-                       }
+                      // var user = userService.GetById(userId);
+                       //if (user.Item1 == null)
+                       //{
+                       //    // return unauthorized if user no longer exists
+                       //    context.Fail("Unauthorized");
+                       //}
                        return Task.CompletedTask;
                    }
                };
@@ -176,13 +177,11 @@
             ConfigureMaps();
 
             //Custom services (.NET CORE 2.1)
-            services.AddTransient<IUserService, UserService>();
-
-            services.AddTransient<INoteService, NoteService>();  
-            services.AddTransient<INewPatientService, NewPatientService>();
+            services.AddTransient<INoteService, NoteService>();
+            services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
             services.AddTransient<ITypeHelperService, TypeHelperService>();
-            services.AddTransient<ISubscriberService, SubscriberService>();
+        
 
             //URI Helper enabling for pagination - Aviral
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
