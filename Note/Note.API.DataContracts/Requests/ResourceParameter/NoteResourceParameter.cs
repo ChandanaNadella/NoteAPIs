@@ -26,7 +26,7 @@
 
         public string SearchQuery { get; set; }
 
-        public string OrderBy { get; set; } = "DateEntered desc";
+        public string OrderBy { get; set; } = "CreatedDate desc";
 
         public string Fields { get; set; }
     }

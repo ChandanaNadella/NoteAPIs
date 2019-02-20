@@ -9,31 +9,13 @@
     using R = Repository.Data.Entities;
 
     public class PropertyMappingService : IPropertyMappingService
-    {
-        private Dictionary<string, PropertyMappingValue> _userPropertyMapping =
-            new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
-            {
-               { "Id", new PropertyMappingValue(new List<string>() { "Id" } ) },
-               { "Username", new PropertyMappingValue(new List<string>() { "Username" } )},
-               //{ "Age", new PropertyMappingValue(new List<string>() { "DateOfBirth" } , true) },
-               { "Name", new PropertyMappingValue(new List<string>() { "FirstName", "LastName" }) }
-               //{ "FirstName", new PropertyMappingValue(new List<string>() { "FirstName" }) },
-               //{ "LastName", new PropertyMappingValue(new List<string>() { "LastName" }) }
-            };
-
-        private Dictionary<string, PropertyMappingValue> _subscriberPropertyMapping =
-           new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
-           {
-                { "FullName", new PropertyMappingValue(new List<string>() { "FullName"}) }
-           };
+    { 
 
         private Dictionary<string, PropertyMappingValue> _notePropertyMapping =
            new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
            {
                { "Id", new PropertyMappingValue(new List<string>() { "note_id" } ) },
-              // { "Patient.PatientId", new PropertyMappingValue(new List<string>() { "patient_id" } ) },
-               { "CreatedDate", new PropertyMappingValue(new List<string>() { "Date_entered" } ) },
-              // { "Provider.ProviderId", new PropertyMappingValue(new List<string>() { "user_id" } ) },
+               { "CreatedDate", new PropertyMappingValue(new List<string>() { "date_entered" } ) },
                { "NoteClass", new PropertyMappingValue(new List<string>() { "note_class" } ) },
                { "NoteType", new PropertyMappingValue(new List<string>() { "note_type" } ) },
                { "NoteTypeId", new PropertyMappingValue(new List<string>() { "note_type_id" } ) },

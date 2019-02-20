@@ -70,7 +70,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
 
                     on.note_id = Convert.ToInt32(rdr2["note_id"]);
                    // on.patient_id = rdr2["patient_id"].ToString();
-                    on.Date_entered = Convert.ToDateTime(rdr2["Date_entered"]);
+                    on.date_entered = Convert.ToDateTime(rdr2["Date_entered"]);
                    //on.user_id = rdr2["user_id"].ToString();
                     on.note_class = Convert.ToChar(rdr2["note_class"]);
                     on.note_type = rdr2["note_type"].ToString();
@@ -123,7 +123,6 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
             return Tuple.Create(lstNotes, totalCount);
         }
 
-
         #endregion GetOperatoryNotes
 
         /// <summary>
@@ -131,7 +130,9 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
         /// </summary>
         /// <param name="operatoryNotes"></param>
         /// <param name="autoNoteId"></param>
+        
         #region InsertOrUpdateOperatoryNotes
+       
         public void InsertOrUpdateOperatoryNotes(operatory_notes operatoryNotes, int? autoNoteId , string noteType)
         {
 
@@ -165,38 +166,27 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                             on.note = rdr["note_text"].ToString();
 
 
-                            // If AutoNote Id is passing from the FrontEnd to an Existing Note.
+                            // If AutoNote Id is passing from the Api to an Existing Note.
 
                             if (operatoryNotes.note_id != 0 && operatoryNotes.note_type != "N")
                             {
-                                // Note class should be always T
-                                //string query1 = string.Format(@"Update 
-                                //        operatory_notes SET date_modified = '{0}',user_id='{1}',description='{2}',  note = note +','+'{3}',note_class='{4}' 
-                                //       where note_id ='{5}' AND patient_id ='{6}' AND  practice_id= '{7}' AND  user_id= '{8}'",
-                                //         dateTimeNow, operatoryNotes.user_id, on.description, on.note + operatoryNotes.note, "T", operatoryNotes.note_id,
-                                //          operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
 
-
-                                string query1 = string.Format(@"Update 
-                                        operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}',freshness = '{2}', user_id='{3}',description='{4}', color= '{5}',tooth='{6},surface='{7}'
-                                    note = note +','+'{8}',note_class='{9}' 
-                                       where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'", opn.note_type_id, opn.note_type,
-                                         dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.color, operatoryNotes.tooth, operatoryNotes.surface, on.note + operatoryNotes.note, "T", operatoryNotes.note_id,
-                                          operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
+                                string query1 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}', note = note +','+'{5}', note_class='{6}'  where note_id ='{7}' AND patient_id ='{8}' AND  practice_id= '{9}' AND  user_id= '{3}'",
+                                   opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.note, "T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
 
                                 OdbcCommand cmd2 = new OdbcCommand(query1, con);
                                 cmd2.ExecuteNonQuery();
                             }
                             else
                             {
-                                // If AutoNote Id is passing from the FrontEnd to an Fresh Note.
+                                // If AutoNote Id is passing from the Api to an Fresh Note.
 
                                 string query2 = "Insert into operatory_notes (patient_id,Date_entered,user_id,note_class,note_type,note_type_id,description,note,color,post_proc_status,date_modified,modified_by,locked_eod,status,tooth_data,claim_id,statement_yn,resp_party_id,tooth,tran_num,archive_name,archive_path,service_code,practice_id,freshness,surface_detail,surface)  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";//, $data['patient_id'],$Date_entered,$user_id,$note_class,$note_type,$note_type_id,$description,$note,$color,$post_proc_status,$date_modified,$modified_by,$locked_eod,$status,$tooth_data,$claim_id,$statement_yn,$resp_party_id,$tooth,$tran_num,$archive_name,$archive_path,$service_code,$practice_id,$freshness,$surface_detail,$surface)";
 
 
 
                                 OdbcCommand cmd = new OdbcCommand(query2, con);
-
+                                #region Operatory Data Table
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.patient_id);
                                 cmd.Parameters.AddWithValue("?", dateTimeNow);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.user_id);
@@ -227,7 +217,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                                 cmd.Parameters.AddWithValue("?", dateTimeNow);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.surface_detail);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.surface);
-
+                                #endregion Operatory Data Table
                                 cmd.ExecuteNonQuery();
 
 
@@ -238,7 +228,6 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                         con.Close();
                 }
 
-                // If AutoNote Id is NOT passing from the FrontEnd and provider is writing to an existing note    
                 else
                 {
 
@@ -255,31 +244,23 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                         opn.note_type = rdr["note_type"].ToString();
                         opn.description = rdr["description"].ToString();
 
-
+                        // If AutoNote Id is NOT passed from the Api and provider is Modifing an existing note   
                         if (operatoryNotes.note_id != 0 && operatoryNotes.note_type != "N")
                         {
-                           // con.Open();
-                            // Note class should be always T
-                            //    string query3 = string.Format(@"Update operatory_notes SET date_modified = '{0}',user_id='{1}', note = note +','+'{2}', note_class='{3}'  where note_id ='{4}' AND patient_id ='{5}' AND  practice_id= '{6}' AND  user_id= '{7}'",
-                            //dateTimeNow, operatoryNotes.user_id, operatoryNotes.note, "T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
+                          
                             string query3 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}', note = note +','+'{5}', note_class='{6}'  where note_id ='{7}' AND patient_id ='{8}' AND  practice_id= '{9}' AND  user_id= '{3}'",
                                  opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.note, "T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
-
-
-
                             OdbcCommand cmd3 = new OdbcCommand(query3, con);
                             cmd3.ExecuteNonQuery();
-                           // con.Close();
 
                         }
+                        // If AutoNote Id is NOT passed from the Api and provider is creating an new note   
                         else
                         {
                             string query4 = "Insert into operatory_notes (patient_id,Date_entered,user_id,note_class,note_type,note_type_id,description,note,color,post_proc_status,date_modified,modified_by,locked_eod,status,tooth_data,claim_id,statement_yn,resp_party_id,tooth,tran_num,archive_name,archive_path,service_code,practice_id,freshness,surface_detail,surface)  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";//, $data['patient_id'],$Date_entered,$user_id,$note_class,$note_type,$note_type_id,$description,$note,$color,$post_proc_status,$date_modified,$modified_by,$locked_eod,$status,$tooth_data,$claim_id,$statement_yn,$resp_party_id,$tooth,$tran_num,$archive_name,$archive_path,$service_code,$practice_id,$freshness,$surface_detail,$surface)";
 
-
-
                             OdbcCommand cmd4 = new OdbcCommand(query4, con);
-
+                            #region Operatory Data Table
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.patient_id);
                             cmd4.Parameters.AddWithValue("?", dateTimeNow);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.user_id);
@@ -310,10 +291,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                             cmd4.Parameters.AddWithValue("?", dateTimeNow);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.surface_detail);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.surface);
-
-                            // con.Close();
-
-                           // con.Open();
+                            #endregion Operatory Data Table
                             cmd4.ExecuteNonQuery();
 
                         }

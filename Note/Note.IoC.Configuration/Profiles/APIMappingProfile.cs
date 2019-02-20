@@ -29,7 +29,7 @@
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src =>
                 $"{src.note_id}"))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src =>
-                $"{src.Date_entered}"))
+                $"{src.date_entered}"))
                .ForMember(dest => dest.NoteClass, opt => opt.MapFrom(src =>
                $"{src.note_class}"))
                .ForMember(dest => dest.NoteType, opt => opt.MapFrom(src =>

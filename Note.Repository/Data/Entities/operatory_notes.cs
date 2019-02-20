@@ -49,7 +49,7 @@
 
 
         [Required]
-        public DateTime Date_entered { set; get; }
+        public DateTime date_entered { set; get; }
 
 
        [MaxLength(1)]

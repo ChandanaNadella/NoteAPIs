@@ -58,11 +58,11 @@
         }
 
         /// <summary>
-        /// 
+        /// To Add Sorting,Paging,Data Shaping for the GetBy method.
         /// </summary>
         /// <param name="paginationResourceParameters"></param>
         /// <param name="type"></param>
-        /// <returns></returns>
+        /// <returns>pageNumber,pageSize,orderBy,fields</returns>
 
         #region Utilities
         private string CreateNoteResourceUri(NoteResourceParameter paginationResourceParameters, ResourceUriType type)
@@ -70,41 +70,34 @@
             switch (type)
             {
                 case ResourceUriType.PreviousPage:
-
-
-
-               var prevUrl=  _urlHelper.Link("GetPatientNotes",
+                   return _urlHelper.Link("GetPatientNotes",
                       new
                       {
                           fields = paginationResourceParameters.Fields,
                           orderBy = paginationResourceParameters.OrderBy,
-                          //searchQuery = paginationResourceParameters.SearchQuery,
-                          //genre = paginationResourceParameters.Clinic,
                           pageNumber = paginationResourceParameters.PageNumber - 1,
                           pageSize = paginationResourceParameters.PageSize
                       });
-                    return prevUrl;
-                case ResourceUriType.NextPage:
+             
 
+                case ResourceUriType.NextPage:
                     return _urlHelper.Link("GetPatientNotes",
                       new
                       {
                           fields = paginationResourceParameters.Fields,
                           orderBy = paginationResourceParameters.OrderBy,
-                          //searchQuery = paginationResourceParameters.SearchQuery,
-                          //genre = paginationResourceParameters.Clinic,
                           pageNumber = paginationResourceParameters.PageNumber + 1,
                           pageSize = paginationResourceParameters.PageSize
                       });
 
+
                 default:
+
                     return _urlHelper.Link("GetPatientNotes",
                     new
                     {
                         fields = paginationResourceParameters.Fields,
                         orderBy = paginationResourceParameters.OrderBy,
-                        //searchQuery = paginationResourceParameters.SearchQuery,
-                        //genre = paginationResourceParameters.Clinic,
                         pageNumber = paginationResourceParameters.PageNumber,
                         pageSize = paginationResourceParameters.PageSize
                     });
@@ -113,17 +106,20 @@
 
         #endregion Utilities
 
+
         #region Methods
 
-
-        
+        /// <summary>
+        /// To get data based on ClinicId,PatientId,UserId from the operatorynotes table.
+        /// </summary>
+        /// <param name="notesData"></param>
+        /// <returns>operatorynotes table filtered by ClinicId,PatientId,UserId </returns>
 
         #region GET
 
         [HttpGet(Name = "GetPatientNotes")]
         public IActionResult GetPatientNotes([FromQuery]NoteResourceParameter notesData)
         {
-
             try
             {
 
@@ -141,8 +137,7 @@
 
                 var result = _noteService.getNotes(notesData);
 
-                    
-
+                // To get the page links of next page and previous page.
 
                     var prevPageLink = result.HasPrevious ?
                 CreateNoteResourceUri(notesData,
@@ -165,15 +160,7 @@
                     Response.Headers.Add("X-Pagination",
                         Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
 
-
-                    // var orderByresult = result.OrderBy(x=>x.Equals(notesData.OrderBy));
-
-
-
-
-
-                    //var OperatoryRepo = _noteService.getNotes(notesData);
-                    // var Operatory = Mapper.Map<IEnumerable<OperatoryNotes>>(OperatoryRepo);
+                  // To log the errors in error log file in C drive.
 
                     if ((result == null) || (result.Count() == 0))
                     {
@@ -197,6 +184,8 @@
 
 
             }
+
+            // Exception handling
             catch (Exception ex)
             {
             }
@@ -207,25 +196,29 @@
 
 
         #endregion
+
+        /// <summary>
+        /// To Update and Insert a row into operatorynotes tables.
+        /// </summary>
+        /// <param name="opNotesDto"></param>
+        /// <param name="autoNoteId"></param>
+        /// <returns>Payload and the row inserted into the operatorynotes table.</returns>
+        
         #region POST
 
         [HttpPost(Name = "PostInsertUpdateOperatoryNotes")]
         public IActionResult PostInsertUpdateOperatoryNotes(OperatoryNotesUpdateDto opNotesDto, int? autoNoteId)
         {
-
-
-
             var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
-
 
             if (opNotesDto.note_type != null || opNotesDto.note_type == "")
             {
                 _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, opNotesDto.note_type);
-                return Ok(new ApiSuccessResponseData(true, opNotesDto, new KeyValuePair<string, string>("200", "Success")));
 
+                return Ok(new ApiSuccessResponseData(true, opNotesDto, new KeyValuePair<string, string>("200", "Success")));
             }
 
-
+            // To log the errors in error log file in C drive.
 
             else
             {
@@ -236,7 +229,6 @@
                     writer.WriteLine("Error Status Code: 400, Bad Request");
                     writer.WriteLine("-----------------------------------------------------------------------------");
                 }
-
 
                 return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
             }

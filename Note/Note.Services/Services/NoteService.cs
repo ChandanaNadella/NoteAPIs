@@ -54,7 +54,6 @@ namespace Note.Services
         /// </summary>
         /// <param name="operatoryNotes"></param>
         /// <param name="autoNoteId"></param>
-        /// <returns></returns>
 
         #region InsertOrUpdateNotes  
         public IEnumerable<operatory_notes> InsertOrUpdateNotes(operatory_notes operatoryNotes, int? autoNoteId, string noteType)        {
