@@ -9,29 +9,13 @@
     using R = Repository.Data.Entities;
 
     public class PropertyMappingService : IPropertyMappingService
-    {
-        private Dictionary<string, PropertyMappingValue> _userPropertyMapping =
-            new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
-            {
-               { "Id", new PropertyMappingValue(new List<string>() { "Id" } ) },
-               { "Username", new PropertyMappingValue(new List<string>() { "Username" } )},
-               //{ "Age", new PropertyMappingValue(new List<string>() { "DateOfBirth" } , true) },
-               { "Name", new PropertyMappingValue(new List<string>() { "FirstName", "LastName" }) }
-               //{ "FirstName", new PropertyMappingValue(new List<string>() { "FirstName" }) },
-               //{ "LastName", new PropertyMappingValue(new List<string>() { "LastName" }) }
-            };
-
-        private Dictionary<string, PropertyMappingValue> _subscriberPropertyMapping =
-           new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
-           {
-                { "FullName", new PropertyMappingValue(new List<string>() { "FullName"}) }
-           };
+    { 
 
         private Dictionary<string, PropertyMappingValue> _notePropertyMapping =
            new Dictionary<string, PropertyMappingValue>(StringComparer.OrdinalIgnoreCase)
            {
                { "Id", new PropertyMappingValue(new List<string>() { "note_id" } ) },
-               { "CreatedDate", new PropertyMappingValue(new List<string>() { "Date_entered" } ) },
+               { "CreatedDate", new PropertyMappingValue(new List<string>() { "date_entered" } ) },
                { "NoteClass", new PropertyMappingValue(new List<string>() { "note_class" } ) },
                { "NoteType", new PropertyMappingValue(new List<string>() { "note_type" } ) },
                { "NoteTypeId", new PropertyMappingValue(new List<string>() { "note_type_id" } ) },
@@ -63,8 +47,6 @@
 
         public PropertyMappingService()
         {
-            propertyMappings.Add(new PropertyMapping<DC.Responses.UserCreationResponse, R.User>(_userPropertyMapping));
-            propertyMappings.Add(new PropertyMapping<DC.Responses.SubscriberCreationResponse, R.Subscriber>(_subscriberPropertyMapping));
             propertyMappings.Add(new PropertyMapping<DC.OperatoryNotes, R.operatory_notes>(_notePropertyMapping));
         }
         public Dictionary<string, PropertyMappingValue> GetPropertyMapping

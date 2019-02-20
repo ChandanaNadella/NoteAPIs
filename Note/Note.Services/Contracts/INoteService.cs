@@ -8,10 +8,10 @@
     public interface INoteService
     {
         /// <summary>
-        /// 
+        /// To Get data from operatory_notes table based on ClinicId, PatientId, ProviderId.
         /// </summary>
         /// <param name="pageparams"></param>
-        /// <returns></returns>
+        /// <returns>Operatory_Notes table  data.</returns>
         PagedList<operatory_notes> getNotes(NoteResourceParameter pageparams);
 
         /// <summary>

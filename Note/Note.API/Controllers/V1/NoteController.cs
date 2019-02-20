@@ -57,6 +57,12 @@
             _typeHelperService = typeHelperService;
         }
 
+        /// <summary>
+        /// To Add Sorting,Paging,Data Shaping for the GetBy method.
+        /// </summary>
+        /// <param name="paginationResourceParameters"></param>
+        /// <param name="type"></param>
+        /// <returns>pageNumber,pageSize,orderBy,fields</returns>
 
         #region Utilities
         private string CreateNoteResourceUri(NoteResourceParameter paginationResourceParameters, ResourceUriType type)
@@ -64,41 +70,34 @@
             switch (type)
             {
                 case ResourceUriType.PreviousPage:
-
-
-
-               var prevUrl=  _urlHelper.Link("GetPatientNotes",
+                   return _urlHelper.Link("GetPatientNotes",
                       new
                       {
                           fields = paginationResourceParameters.Fields,
                           orderBy = paginationResourceParameters.OrderBy,
-                          //searchQuery = paginationResourceParameters.SearchQuery,
-                          //genre = paginationResourceParameters.Clinic,
                           pageNumber = paginationResourceParameters.PageNumber - 1,
                           pageSize = paginationResourceParameters.PageSize
                       });
-                    return prevUrl;
-                case ResourceUriType.NextPage:
+             
 
+                case ResourceUriType.NextPage:
                     return _urlHelper.Link("GetPatientNotes",
                       new
                       {
                           fields = paginationResourceParameters.Fields,
                           orderBy = paginationResourceParameters.OrderBy,
-                          //searchQuery = paginationResourceParameters.SearchQuery,
-                          //genre = paginationResourceParameters.Clinic,
                           pageNumber = paginationResourceParameters.PageNumber + 1,
                           pageSize = paginationResourceParameters.PageSize
                       });
 
+
                 default:
+
                     return _urlHelper.Link("GetPatientNotes",
                     new
                     {
                         fields = paginationResourceParameters.Fields,
                         orderBy = paginationResourceParameters.OrderBy,
-                        //searchQuery = paginationResourceParameters.SearchQuery,
-                        //genre = paginationResourceParameters.Clinic,
                         pageNumber = paginationResourceParameters.PageNumber,
                         pageSize = paginationResourceParameters.PageSize
                     });
@@ -107,82 +106,20 @@
 
         #endregion Utilities
 
+
         #region Methods
 
-
-        #region POST
         /// <summary>
-        /// 
+        /// To get data based on ClinicId,PatientId,UserId from the operatorynotes table.
         /// </summary>
-        /// <param name="userDto"></param>
-        /// <returns></returns>
-        //[AllowAnonymous]
-        //[HttpPost("authenticate")]
-        //public IActionResult Authenticate([FromBody]UserCredentials userDto)
-        //{
-        //    var user = Mapper.Map<Tuple<RP.User, bool, string>, Tuple<DC.User, bool, string>>(_userService.Authenticate(userDto.Username, userDto.Password));
-
-        //    if (!user.Item2)
-        //    {
-        //        switch (user.Item3)
-        //        {
-        //            case AlertMessages.User_Doesnot_Exits:
-        //                return NotFound(new ApiErrorResponseData(user.Item2, null, new KeyValuePair<string, string>("404", user.Item3)));
-        //            case AlertMessages.Username_Password_Empty:
-        //                return BadRequest(new ApiErrorResponseData(user.Item2, null, new KeyValuePair<string, string>("400", user.Item3)));
-        //            case AlertMessages.Password_Incorrect:
-        //                return BadRequest(new ApiErrorResponseData(user.Item2, null, new KeyValuePair<string, string>("400", user.Item3)));
-        //        }
-        //    }
-
-        //    JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-        //    byte[] key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-
-        //    var tokenDescriptor = new SecurityTokenDescriptor
-        //    {
-        //        Subject = new ClaimsIdentity(new Claim[]
-        //        {
-        //            new Claim(ClaimTypes.Name, user.Item1.Id.ToString())
-        //        }),
-        //        Expires = DateTime.UtcNow.AddHours(10),
-        //        SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-        //    };
-
-        //    var token = tokenHandler.CreateToken(tokenDescriptor);
-        //    var tokenString = tokenHandler.WriteToken(token);
-        //    user.Item1.Token = tokenString;
-
-        //    // return basic user info (without password) and token to store client side
-        //    return Ok(new ApiSuccessResponseData(user.Item2, user.Item1, new KeyValuePair<string, string>("200", user.Item3)));
-        //}
-
-        //[HttpPost("register")]
-        //[AllowAnonymous]
-        //public IActionResult Register([FromBody]DC.Requests.UserCreationRequest user)
-        //{
-        //    try
-        //    {
-        //        // save 
-        //        Tuple<RP.User, bool, string> userData = _userService.Create(user);
-
-        //        if (!userData.Item2) return NotFound(new ApiErrorResponseData(userData.Item2, null, new KeyValuePair<string, string>("404", userData.Item3)));
-
-        //        return Ok(new ApiSuccessResponseData(userData.Item2, userData.Item1, new KeyValuePair<string, string>("200", userData.Item3)));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // return error message if there was an exception
-        //        return NotFound();
-        //    }
-        //}
-        #endregion
+        /// <param name="notesData"></param>
+        /// <returns>operatorynotes table filtered by ClinicId,PatientId,UserId </returns>
 
         #region GET
-       
+
         [HttpGet(Name = "GetPatientNotes")]
         public IActionResult GetPatientNotes([FromQuery]NoteResourceParameter notesData)
         {
-
             try
             {
 
@@ -200,8 +137,7 @@
 
                 var result = _noteService.getNotes(notesData);
 
-                    
-
+                // To get the page links of next page and previous page.
 
                     var prevPageLink = result.HasPrevious ?
                 CreateNoteResourceUri(notesData,
@@ -224,15 +160,7 @@
                     Response.Headers.Add("X-Pagination",
                         Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
 
-
-                    // var orderByresult = result.OrderBy(x=>x.Equals(notesData.OrderBy));
-
-
-
-
-
-                    //var OperatoryRepo = _noteService.getNotes(notesData);
-                    // var Operatory = Mapper.Map<IEnumerable<OperatoryNotes>>(OperatoryRepo);
+                  // To log the errors in error log file in C drive.
 
                     if ((result == null) || (result.Count() == 0))
                     {
@@ -256,6 +184,8 @@
 
 
             }
+
+            // Exception handling
             catch (Exception ex)
             {
             }
@@ -263,35 +193,54 @@
             return null; 
 
         }
+
+
+        #endregion
+
+        /// <summary>
+        /// To Update and Insert a row into operatorynotes tables.
+        /// </summary>
+        /// <param name="opNotesDto"></param>
+        /// <param name="autoNoteId"></param>
+        /// <returns>Payload and the row inserted into the operatorynotes table.</returns>
+        
+        #region POST
+
+        [HttpPost(Name = "PostInsertUpdateOperatoryNotes")]
+        public IActionResult PostInsertUpdateOperatoryNotes(OperatoryNotesUpdateDto opNotesDto, int? autoNoteId)
+        {
+            var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
+
+            if (opNotesDto.note_type != null || opNotesDto.note_type == "")
+            {
+                _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, opNotesDto.note_type);
+
+                return Ok(new ApiSuccessResponseData(true, opNotesDto, new KeyValuePair<string, string>("200", "Success")));
+            }
+
+            // To log the errors in error log file in C drive.
+
+            else
+            {
+                string filePath = @"..\Note.API.Common\ErrorLogs\Error.txt";
+                using (StreamWriter writer = new StreamWriter(filePath, true))
+                {
+                    writer.WriteLine("Date : " + DateTime.Now.ToString());
+                    writer.WriteLine("Error Status Code: 400, Bad Request");
+                    writer.WriteLine("-----------------------------------------------------------------------------");
+                }
+
+                return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
+            }
+
+
+        }
         #endregion
         #endregion Methods
 
-        [HttpPost("postInsertOrUpdatePatientsNotes")]
-        public IActionResult PostInsertUpdateOperatoryNotes(OperatoryNotesUpdateDto opNotesDto, int? autoNoteId, string noteType)
-        {
 
-            var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
-            OperatoryNotes operatorynotes = new OperatoryNotes();
-
-            //Checking whether the Note-Type is Contract-Note or not. Note-Type for Contract-Note is "N" 
-            
-
-             var updatedNote = _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, noteType);
-
-               // var updatedNoteMappedList = Mapper.Map<IEnumerable<OperatoryNotesUpdateDto>>(updatedNote);
-
-                return Ok(new ApiSuccessResponseData(true, opNotesDto, new KeyValuePair<string, string>("200", "Success")));  
-         
-            //If the Note-Type is Contract-Note or Note-Type="N"
-            //else
-            //{
-            //    return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request, Note-Type should not be a Contract-Note")));
-            //}
-           
-
-        }
 
     }
-   
-    
+
+
 }

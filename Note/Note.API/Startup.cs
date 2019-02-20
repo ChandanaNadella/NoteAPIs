@@ -113,38 +113,6 @@
                 // configure jwt authentication
                 var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
 
-                services.AddAuthentication(x =>
-                {
-                    x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                    x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-                })
-           .AddJwtBearer(x =>
-           {
-               x.Events = new JwtBearerEvents
-               {
-                   OnTokenValidated = context =>
-                   {
-                       var userService = context.HttpContext.RequestServices.GetRequiredService<IUserService>();
-                       var userId = context.Principal.Identity.Name;
-                       var user = userService.GetById(userId);
-                       if (user.Item1 == null)
-                       {
-                           // return unauthorized if user no longer exists
-                           context.Fail("Unauthorized");
-                       }
-                       return Task.CompletedTask;
-                   }
-               };
-               x.RequireHttpsMetadata = false;
-               x.SaveToken = true;
-               x.TokenValidationParameters = new TokenValidationParameters
-               {
-                   ValidateIssuerSigningKey = true,
-                   IssuerSigningKey = new SymmetricSecurityKey(key),
-                   ValidateIssuer = false,
-                   ValidateAudience = false
-               };
-           });
 
                 if (_appSettings.Swagger.Enabled)
                 {
@@ -177,15 +145,11 @@
             ConfigureMaps();
 
             //Custom services (.NET CORE 2.1)
-            services.AddTransient<IUserService, UserService>();
-
             services.AddTransient<INoteService, NoteService>();
             services.AddTransient<ITokenService, TokenService>();
-
-            services.AddTransient<INewPatientService, NewPatientService>();
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
             services.AddTransient<ITypeHelperService, TypeHelperService>();
-            services.AddTransient<ISubscriberService, SubscriberService>();
+        
 
             //URI Helper enabling for pagination - Aviral
             services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
@@ -274,7 +238,6 @@
             Mapper.Initialize(cfg =>
             {
                 cfg.AddProfile<APIMappingProfile>();
-                //cfg.AddProfile<ServicesMappingProfile>();
             });
         }
 
@@ -295,9 +258,6 @@
                 Title = $"{_appSettings.API.Title} {description.ApiVersion}",
                 Version = description.ApiVersion.ToString(),
                 Description = _appSettings.API.Description
-                //Contact = new Contact() { Name = "Bill Mei", Email = "bill.mei@somewhere.com" },
-                //TermsOfService = "Shareware",
-                //License = new License() { Name = "MIT", Url = "https://opensource.org/licenses/MIT" }
             };
 
             if (description.IsDeprecated)

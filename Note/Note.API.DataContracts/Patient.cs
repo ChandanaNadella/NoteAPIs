@@ -8,6 +8,7 @@
     {
         [Required]
         [MaxLength(5)]
+
         //Value is from the patient_id column on the patient table.  
         //Foreign key fk_patient exists.
         public string Id { set; get; }

@@ -9,16 +9,7 @@
     {
         public APIMappingProfile()
         {
-            CreateMap<RP.User, DC.User>();
-
-            //Mapping First name and last name as name.
-            CreateMap<RP.User, DCR.UserCreationResponse>()
-                .ForMember(dest => dest.Token, opt => opt.MapFrom(src =>
-                 "N/A"))
-            .ForMember(dest => dest.Name, opt => opt.MapFrom(src =>
-                    $"{src.FirstName} {src.LastName}"));
-
-            CreateMap<RP.NewPatient, DC.NewPatient>();
+                     //Mapping First name and last name as name.           
 
             CreateMap<DC.OperatoryNotesUpdateDto, RP.operatory_notes>();
            //.ForMember(dest => dest.provider_id, opt => opt.MapFrom(src =>
@@ -38,7 +29,7 @@
                 .ForMember(dest => dest.Id, opt => opt.MapFrom(src =>
                 $"{src.note_id}"))
                 .ForMember(dest => dest.CreatedDate, opt => opt.MapFrom(src =>
-                $"{src.Date_entered}"))
+                $"{src.date_entered}"))
                .ForMember(dest => dest.NoteClass, opt => opt.MapFrom(src =>
                $"{src.note_class}"))
                .ForMember(dest => dest.NoteType, opt => opt.MapFrom(src =>

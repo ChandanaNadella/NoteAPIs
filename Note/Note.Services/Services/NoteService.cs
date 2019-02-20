@@ -35,7 +35,12 @@ namespace Note.Services
         #region Get ByID  
         public PagedList<operatory_notes> getNotes(NoteResourceParameter pageparams)
         {
-            var operatoryNotes = _context.GetOperatoryNotesByPatientIdByClinicIDByUserId(pageparams.OperatoryNoteRequest.PatientId, pageparams.OperatoryNoteRequest.ClinicId, pageparams.OperatoryNoteRequest.UserId, pageSize: pageparams.PageSize, currentPage: pageparams.PageNumber);
+            var orderBy =
+              pageparams.OrderBy
+               .CreateSortParams(pageparams.OrderBy,
+               _propertyMappingService.GetPropertyMapping<DC.OperatoryNotes, operatory_notes>());
+
+            var operatoryNotes = _context.GetOperatoryNotesByPatientIdByClinicIDByUserId(pageparams.OperatoryNoteRequest.PatientId, pageparams.OperatoryNoteRequest.ClinicId, pageparams.OperatoryNoteRequest.UserId, OrderBy: orderBy, pageSize: pageparams.PageSize, currentPage: pageparams.PageNumber);
 
             var pagedCollection = PagedList<operatory_notes>.Create(operatoryNotes.Item1, pageparams.PageNumber, pageparams.PageSize, operatoryNotes.Item2);
 
@@ -49,7 +54,6 @@ namespace Note.Services
         /// </summary>
         /// <param name="operatoryNotes"></param>
         /// <param name="autoNoteId"></param>
-        /// <returns></returns>
 
         #region InsertOrUpdateNotes  
         public IEnumerable<operatory_notes> InsertOrUpdateNotes(operatory_notes operatoryNotes, int? autoNoteId, string noteType)        {
