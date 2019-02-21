@@ -15,4 +15,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Note.API.Common\Note.API.Common.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -69,9 +69,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                     #region Operatory Data Table
 
                     on.note_id = Convert.ToInt32(rdr2["note_id"]);
-                   // on.patient_id = rdr2["patient_id"].ToString();
                     on.date_entered = Convert.ToDateTime(rdr2["Date_entered"]);
-                   //on.user_id = rdr2["user_id"].ToString();
                     on.note_class = Convert.ToChar(rdr2["note_class"]);
                     on.note_type = rdr2["note_type"].ToString();
                     on.note_type_id = Convert.ToInt32(rdr2["note_type_id"]);
@@ -133,8 +131,9 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
         
         #region InsertOrUpdateOperatoryNotes
        
-        public void InsertOrUpdateOperatoryNotes(operatory_notes operatoryNotes, int? autoNoteId , string noteType)
+        public bool InsertOrUpdateOperatoryNotes(operatory_notes operatoryNotes, int? autoNoteId , string noteType)
         {
+            bool rowsAffected= false; int rows = 0;
 
             using (OdbcConnection con = new OdbcConnection(ConnectionPath))
             {
@@ -171,11 +170,12 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                             if (operatoryNotes.note_id != 0 && operatoryNotes.note_type != "N")
                             {
 
-                                string query1 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}', note = note +','+'{5}', note_class='{6}'  where note_id ='{7}' AND patient_id ='{8}' AND  practice_id= '{9}' AND  user_id= '{3}'",
-                                   opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.note, "T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
+                                string query1 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
+                                   opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description,operatoryNotes.tooth,operatoryNotes.surface,operatoryNotes.color, operatoryNotes.note, "T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
 
                                 OdbcCommand cmd2 = new OdbcCommand(query1, con);
-                                cmd2.ExecuteNonQuery();
+                                  rows = cmd2.ExecuteNonQuery();
+
                             }
                             else
                             {
@@ -218,7 +218,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.surface_detail);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.surface);
                                 #endregion Operatory Data Table
-                                cmd.ExecuteNonQuery();
+                                 rows = cmd.ExecuteNonQuery();
 
 
                             }
@@ -248,10 +248,10 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                         if (operatoryNotes.note_id != 0 && operatoryNotes.note_type != "N")
                         {
                           
-                            string query3 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}', note = note +','+'{5}', note_class='{6}'  where note_id ='{7}' AND patient_id ='{8}' AND  practice_id= '{9}' AND  user_id= '{3}'",
-                                 opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.note, "T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
+                            string query3 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
+                                 opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.tooth, operatoryNotes.surface, operatoryNotes.color, operatoryNotes.note, "T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
                             OdbcCommand cmd3 = new OdbcCommand(query3, con);
-                            cmd3.ExecuteNonQuery();
+                             rows = cmd3.ExecuteNonQuery();
 
                         }
                         // If AutoNote Id is NOT passed from the Api and provider is creating an new note   
@@ -292,18 +292,22 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.surface_detail);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.surface);
                             #endregion Operatory Data Table
-                            cmd4.ExecuteNonQuery();
+                             rows = cmd4.ExecuteNonQuery();
 
                         }
-                       
+                     
 
                     }
                     con.Close();
 
                 }
-               
-           
+
             }
+            if (rows > 0)
+            {
+                rowsAffected = true;
+            }
+            return rowsAffected;
         }
         #endregion InsertOrUpdateOperatoryNotes
 

@@ -56,11 +56,10 @@ namespace Note.Services
         /// <param name="autoNoteId"></param>
 
         #region InsertOrUpdateNotes  
-        public IEnumerable<operatory_notes> InsertOrUpdateNotes(operatory_notes operatoryNotes, int? autoNoteId, string noteType)        {
+        public bool InsertOrUpdateNotes(operatory_notes operatoryNotes, int? autoNoteId, string noteType)
+        {
 
-            _context.InsertOrUpdateOperatoryNotes(operatoryNotes, autoNoteId,noteType);
-
-            return null;
+           return  _context.InsertOrUpdateOperatoryNotes(operatoryNotes, autoNoteId,noteType);
 
         }
         #endregion InsertOrUpdateNotes  

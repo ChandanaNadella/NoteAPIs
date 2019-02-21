@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.IO;
-using System.Collections;
+﻿namespace Note.API.DataContracts.Requests
 
-namespace Note.API.DataContracts.Requests
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Runtime.CompilerServices;
+    using System.Text;
+    using System.IO;
+    using System.Collections;
     public class CustomErrorAttribute : ValidationAttribute
     {
-       
+
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
 
         {
@@ -25,10 +25,8 @@ namespace Note.API.DataContracts.Requests
             }
             else
             {
-                //int Clinicid = Convert.ToInt32(valid);
-                //Validation for ClinicId and PatientId to take only positive integer value. 
-
-                if (validationContext.MemberName == "ClinicId")
+               
+              if (validationContext.MemberName == "ClinicId")
                 {
 
                     var regex = new RegularExpressionAttribute("^[1-9]\\d*$");
@@ -41,24 +39,24 @@ namespace Note.API.DataContracts.Requests
                         return new ValidationResult(validationContext.DisplayName + " is Invalid");
 
                     }
-                
-                else
-                {
+
+                    else
+                    {
                         //Int64 integer;
                         // bool validClinicId = Int64.TryParse( Convert.ToString(value), out integer);
                         int validClinicId = Convert.ToInt32(value);
 
 
-                     if (validClinicId > 65535)
-                    {
-                        WriteToFileErrors();
-                        return new ValidationResult(validationContext.DisplayName + " is Invalid");
+                        if (validClinicId > 65535)
+                        {
+                            WriteToFileErrors();
+                            return new ValidationResult(validationContext.DisplayName + " is Invalid");
+                        }
                     }
-                }
 
 
                 }
-            
+
                 else if (validationContext.MemberName == "ProviderId")
                 {   //Validation for ProviderId to take AlphaNumeric characters and min=1 and max=3. 
 
@@ -73,7 +71,7 @@ namespace Note.API.DataContracts.Requests
 
 
                 }
-                else 
+                else if (validationContext.MemberName == "PatientId")
                 {   //Validation for ProviderId to take AlphaNumeric characters and min=1 and max=3. 
 
                     var regex_pat = new RegularExpressionAttribute("^([a-zA-Z0-9]){1,5}");
@@ -88,7 +86,37 @@ namespace Note.API.DataContracts.Requests
 
 
                 }
+                else if (validationContext.MemberName == "NoteId")
+                {   //Validation for ProviderId to take AlphaNumeric characters and min=1 and max=3. 
 
+                    var regex = new RegularExpressionAttribute("^[1-9]\\d*$");
+                    var validregex = regex.IsValid(value);
+
+
+                    if (!validregex)
+                    {
+                        WriteToFileErrors();
+                        return new ValidationResult(validationContext.DisplayName + " is Invalid");
+
+                    }
+
+                    else
+                    {
+                        //Int64 integer;
+                        // bool validClinicId = Int64.TryParse( Convert.ToString(value), out integer);
+                        Int64 validNoteId = Convert.ToInt64(value);
+
+
+                        if (validNoteId > 4294967295)
+                        {
+                            WriteToFileErrors();
+                            return new ValidationResult(validationContext.DisplayName + " is Invalid");
+                        }
+                    }
+
+
+
+                }
 
             }
             //if there is no validations error.
@@ -107,12 +135,12 @@ namespace Note.API.DataContracts.Requests
                 writer.WriteLine("Error Status Code: 400, Error Status Message: Bad Request");
                 writer.WriteLine("-----------------------------------------------------------------------------");
             }
-            
+
         }
 
-        
+
 
     }
 
-    
+
 }

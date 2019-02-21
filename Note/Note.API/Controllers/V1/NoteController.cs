@@ -213,9 +213,26 @@
 
             if (opNotesDto.note_type != null || opNotesDto.note_type == "")
             {
-                _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, opNotesDto.note_type);
+               var isAffected = _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, opNotesDto.note_type);
 
-                return Ok(new ApiSuccessResponseData(true, opNotesDto, new KeyValuePair<string, string>("200", "Success")));
+                if(isAffected == true)
+                {
+                    return Ok(new ApiSuccessResponseData(true, opNotesDto, new KeyValuePair<string, string>("200", "Success")));
+                }
+                else
+                {
+                    string filePath = @"..\Note.API.Common\ErrorLogs\Error.txt";
+                    using (StreamWriter writer = new StreamWriter(filePath, true))
+                    {
+                        writer.WriteLine("Date : " + DateTime.Now.ToString());
+                        writer.WriteLine("Error Status Code: 404, Not Found");
+                        writer.WriteLine("-----------------------------------------------------------------------------");
+                    }
+
+                    return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("404", " Not Found")));
+
+                }
+               
             }
 
             // To log the errors in error log file in C drive.

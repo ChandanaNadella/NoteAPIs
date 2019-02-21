@@ -2,11 +2,10 @@
 {
     public static class AlertMessages
     {
-        public const string Username_Password_Empty = "Username/Password is empty.";
-        public const string User_Doesnot_Exits = "User doesn't exists.";
-        public const string Password_Incorrect = "Password is incorrect.";
-        public const string Authenticate_Success =  "Authenticated Successfully.";
-        public const string User_Success =  "User data Success.";
-        public const string Subscriber_Success = "Subscriber data Success.";
+        public const string PatientId_Required = "Patient Id is Required Field";
+        public const string ClinicId_Required = "Clinic Id / Practice Id is Required Field";
+        public const string ProviderId_Required = "Provider Id /User Id is Required Field";
+        public const string NoteType_Required = "Note Type is Required Field";
+
     }
 }

@@ -20,7 +20,7 @@
         /// <param name="operatoryNotesToUpdate"></param>
         /// <param name="autoNoteId"></param>
         /// <returns></returns>
-        IEnumerable<operatory_notes> InsertOrUpdateNotes(operatory_notes operatoryNotesToUpdate, int? autoNoteId, string noteType);
+        bool InsertOrUpdateNotes(operatory_notes operatoryNotesToUpdate, int? autoNoteId, string noteType);
 
 
     }

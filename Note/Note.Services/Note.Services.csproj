@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Note.API.Common\Note.API.Common.csproj" />
-    <ProjectReference Include="..\Note.DBTokenGenerator\Eaglesoft Settings Token Examples\Eaglesoft Settings Token Examples\DotNET Example.csproj" />
     <ProjectReference Include="..\Note.IoC.Configuration\Note.IoC.Configuration.csproj" />
   </ItemGroup>
 
