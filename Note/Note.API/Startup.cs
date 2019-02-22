@@ -32,6 +32,7 @@
     using System.Reflection;
     using System.Text;
     using System.Threading.Tasks;
+    using NLog.Extensions.Logging;
 
     public class Startup
     {
@@ -167,13 +168,16 @@
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory, IApiVersionDescriptionProvider provider)
          {
             app.UseMvc();
+            //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
+            loggerFactory.AddConsole();
+            loggerFactory.AddDebug(LogLevel.Information);
+            // ILoggerFactory.AddProvider(new NLog.Extensions.Logging.NLogLoggerProvider());
+            //ILoggerFactory.AddNLog();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
 
-                //loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-                loggerFactory.AddConsole();
-                loggerFactory.AddDebug(LogLevel.Information);
+               
             }
             else
             {

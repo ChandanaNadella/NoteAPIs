@@ -27,6 +27,7 @@
     using System.IO;
     using Microsoft.Extensions.Logging;
     using System.Linq;
+    using Microsoft.AspNetCore.Mvc;
 
     [ApiVersion("1.0")]
     //[Route("api/users")]//required for default versioning
@@ -125,6 +126,8 @@
 
                 if (notesData.OperatoryNoteRequest.ClinicId == null || notesData.OperatoryNoteRequest.PatientId == null || notesData.OperatoryNoteRequest.UserId == null)
                 {
+                    _logger.LogError(string.Format("Date : {0}, Error Status Code: 400, Error Status Message: Bad Request", DateTime.Now.ToString()));
+                    _logger.LogInformation("-----------------------------------------------------------------------------");
 
                     return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
 
@@ -132,6 +135,9 @@
 
                 if (!_typeHelperService.TypeHasProperties<DC.OperatoryNotes>(notesData.Fields))
                 {
+                    _logger.LogError(string.Format("Date : {0}, Error Status Code: 400, Error Status Message: Bad Request", DateTime.Now.ToString()));
+                    _logger.LogInformation("-----------------------------------------------------------------------------");
+
                     return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
                 }
 
@@ -160,29 +166,21 @@
                     Response.Headers.Add("X-Pagination",
                         Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
 
-                  // To log the errors in error log file in C drive.
+                // To log the errors in error log file in C drive.
 
-                    if ((result == null) || (result.Count() == 0))
-                    {
-                        string filePath = @"..\Note.API.Common\ErrorLogs\Error.txt";
-                        using (StreamWriter writer = new StreamWriter(filePath, true))
-                        {
-                            writer.WriteLine("Date : " + DateTime.Now.ToString());
-                            writer.WriteLine("Error Status Code: 404, Error Status Message: Not Found");
-                            writer.WriteLine("-----------------------------------------------------------------------------");
-                        }
+                if ((result == null) || (result.Count() == 0))
+                {
+                  
+                        _logger.LogError(string.Format("Date : {0}, Error Status Code: 404, Error Status Message: Not Found", DateTime.Now.ToString()));
+                        _logger.LogInformation("-----------------------------------------------------------------------------");
+                    
 
-                        return NotFound(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("404", "Not Found")));
+                    return NotFound(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("404", "Not Found")));
+                }
 
-
-                    }
                 var noteMappedList = Mapper.Map<IEnumerable<OperatoryNotes>>(result);
 
                 return Ok(new ApiSuccessResponseData(true, noteMappedList.ShapeData(notesData.Fields), new KeyValuePair<string, string>("200","Success")));
-
-               
-
-
             }
 
             // Exception handling
@@ -209,6 +207,10 @@
         [HttpPost(Name = "PostInsertUpdateOperatoryNotes")]
         public IActionResult PostInsertUpdateOperatoryNotes(OperatoryNotesUpdateDto opNotesDto, int? autoNoteId)
         {
+            if(!ModelState.IsValid)
+            {
+                return new Common.Helpers.UnprocessableEntityObjectResult(ModelState);
+            }
             var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
 
             if (opNotesDto.note_type != null || opNotesDto.note_type == "")
@@ -221,13 +223,8 @@
                 }
                 else
                 {
-                    string filePath = @"..\Note.API.Common\ErrorLogs\Error.txt";
-                    using (StreamWriter writer = new StreamWriter(filePath, true))
-                    {
-                        writer.WriteLine("Date : " + DateTime.Now.ToString());
-                        writer.WriteLine("Error Status Code: 404, Not Found");
-                        writer.WriteLine("-----------------------------------------------------------------------------");
-                    }
+                    _logger.LogError(string.Format("Date : {0}, Error Status Code: 404, Error Status Message: Not Found", DateTime.Now.ToString()));
+                    _logger.LogInformation("-----------------------------------------------------------------------------");
 
                     return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("404", " Not Found")));
 
@@ -239,13 +236,8 @@
 
             else
             {
-                string filePath = @"..\Note.API.Common\ErrorLogs\Error.txt";
-                using (StreamWriter writer = new StreamWriter(filePath, true))
-                {
-                    writer.WriteLine("Date : " + DateTime.Now.ToString());
-                    writer.WriteLine("Error Status Code: 400, Bad Request");
-                    writer.WriteLine("-----------------------------------------------------------------------------");
-                }
+                _logger.LogError(string.Format("Date : {0}, Error Status Code: 400, Error Status Message: Bad Request", DateTime.Now.ToString()));
+                _logger.LogInformation("-----------------------------------------------------------------------------");
 
                 return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
             }

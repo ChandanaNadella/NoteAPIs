@@ -16,12 +16,12 @@ namespace Note.API
             WebHost.CreateDefaultBuilder(args)
             .UseIISIntegration()
                 .UseStartup<Startup>()
-            .UseNLog();
+                 .UseNLog();
 
         public static IWebHost BuildWebHost(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
-                .Build();
+                 .Build();
     }
 
 }

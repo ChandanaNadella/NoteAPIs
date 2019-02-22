@@ -1838,3 +1838,99 @@ Date : 2/21/2019 4:37:03 PM
 Error Occurred :Patient Id is Required Field
 Error Status Code: 400, Error Status Message: Bad Request
 -----------------------------------------------------------------------------
+Date : 2/21/2019 5:44:51 PM
+Error Occurred :
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/21/2019 5:45:30 PM
+Error Status Code: 404, Not Found
+-----------------------------------------------------------------------------
+Date : 2/21/2019 5:45:45 PM
+Error Occurred :
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/21/2019 5:52:08 PM
+Error Occurred :Note Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/21/2019 6:05:17 PM
+Error Status Code: 404, Not Found
+-----------------------------------------------------------------------------
+Date : 2/21/2019 6:06:20 PM
+Error Occurred :Note Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/21/2019 6:07:52 PM
+Error Occurred :Note Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/21/2019 6:10:44 PM
+Error Occurred :Note Type is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/21/2019 6:45:17 PM
+Error Occurred :Note Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/21/2019 7:21:53 PM
+Error Status Code: 404, Error Status Message: Not Found
+-----------------------------------------------------------------------------
+Date : 2/21/2019 7:24:29 PM
+Error Status Code: 404, Error Status Message: Not Found
+-----------------------------------------------------------------------------
+Date : 2/21/2019 7:24:44 PM
+Error Status Code: 404, Error Status Message: Not Found
+-----------------------------------------------------------------------------
+Date : 2/21/2019 7:46:00 PM
+Error Status Code: 404, Not Found
+-----------------------------------------------------------------------------
+Date : 2/22/2019 11:53:01 AM
+Error Status Code: 404, Error Status Message: Not Found
+-----------------------------------------------------------------------------
+Date : 2/22/2019 11:53:48 AM
+Error Status Code: 404, Error Status Message: Not Found
+-----------------------------------------------------------------------------
+Date : 2/22/2019 12:04:05 PM
+Error Status Code: 404, Error Status Message: Not Found
+-----------------------------------------------------------------------------
+Date : 2/22/2019 12:05:33 PM
+Error Status Code: 404, Error Status Message: Not Found
+-----------------------------------------------------------------------------
+Date : 2/22/2019 12:07:46 PM
+Error Status Code: 404, Not Found
+-----------------------------------------------------------------------------
+Date : 2/22/2019 12:09:36 PM
+Error Status Code: 404, Not Found
+-----------------------------------------------------------------------------
+Date : 2/22/2019 12:12:09 PM
+Error Occurred :Patient Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/22/2019 12:15:43 PM
+Error Occurred :Clinic Id / Practice Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/22/2019 12:15:43 PM
+Error Occurred :Patient Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/22/2019 12:19:22 PM
+Error Occurred :Clinic Id / Practice Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/22/2019 12:19:22 PM
+Error Occurred :Patient Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/22/2019 1:24:58 PM
+Error Occurred :Patient Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/22/2019 6:32:00 PM
+Error Occurred :Patient Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------
+Date : 2/22/2019 6:34:45 PM
+Error Occurred :Patient Id is Required Field
+Error Status Code: 400, Error Status Message: Bad Request
+-----------------------------------------------------------------------------

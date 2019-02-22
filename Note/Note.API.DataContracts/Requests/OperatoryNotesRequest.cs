@@ -10,12 +10,15 @@ namespace Note.API.DataContracts.Requests
 {
    public class  OperatoryNotesRequest
     {
-        [CustomError(ErrorMessage = AlertMessages.ClinicId_Required)]
+        [Required(ErrorMessage = AlertMessages.ClinicId_Required)]
         public string  ClinicId {get; set; }
-        [CustomError(ErrorMessage = AlertMessages.PatientId_Required)]
-        
+
+        [Required(ErrorMessage = AlertMessages.PatientId_Required)]
+        [MaxLength(5, ErrorMessage = AlertMessages.PatientId_Required)]
         public string PatientId { get; set; }
-        [CustomError(ErrorMessage = AlertMessages.ProviderId_Required)]  
+
+        [Required(ErrorMessage = AlertMessages.ProviderId_Required)]
+        [MaxLength(3, ErrorMessage = AlertMessages.ProviderId_Invalid)]
         public string UserId { get; set; }
     }
 }
