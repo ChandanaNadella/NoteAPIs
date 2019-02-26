@@ -8,13 +8,13 @@ using Note.API.Common.Messages;
 
 namespace Note.API.DataContracts.Requests
 {
-   public class  OperatoryNotesRequest
+    public class OperatoryNotesRequest
     {
         [Required(ErrorMessage = AlertMessages.ClinicId_Required)]
-        public string  ClinicId {get; set; }
+        public string ClinicId { get; set; }
 
         [Required(ErrorMessage = AlertMessages.PatientId_Required)]
-        [MaxLength(5, ErrorMessage = AlertMessages.PatientId_Required)]
+        [MaxLength(5, ErrorMessage = AlertMessages.PatientId_Invalid)]
         public string PatientId { get; set; }
 
         [Required(ErrorMessage = AlertMessages.ProviderId_Required)]

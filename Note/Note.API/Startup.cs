@@ -1,13 +1,13 @@
 ﻿namespace Note.API
 {
     using AutoMapper;
-    using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.ApiExplorer;
+    using Microsoft.AspNetCore.Mvc.Formatters;
     using Microsoft.AspNetCore.Mvc.Infrastructure;
     using Microsoft.AspNetCore.Mvc.Routing;
     using Microsoft.AspNetCore.Mvc.Versioning;
@@ -16,9 +16,7 @@
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.PlatformAbstractions;
-    using Microsoft.IdentityModel.Tokens;
     using Newtonsoft.Json.Serialization;
-    using Note.API.Common.Attributes;
     using Note.API.Common.Extensions;
     using Note.API.Common.Settings;
     using Note.API.Swagger;
@@ -31,8 +29,6 @@
     using System.IO;
     using System.Reflection;
     using System.Text;
-    using System.Threading.Tasks;
-    using NLog.Extensions.Logging;
 
     public class Startup
     {
@@ -50,10 +46,27 @@
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
+            services.AddMvc(
+               setupAction =>
+               {
+                   setupAction.ReturnHttpNotAcceptable = true;
+                   setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
+                   setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter());
+               }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
+               .AddJsonOptions(options =>
+               {
+                   options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+               });
+
+
             services.Configure<IISOptions>(options =>
             {
 
+            });
+
+            services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.SuppressModelStateInvalidFilter = true;
             });
 
             //API Explorer (for API Versioning)
@@ -70,20 +83,7 @@
                 });
 
 
-            services.AddMvc(
-                setupAction =>
-                {
-                    setupAction.Filters.Add(typeof(CustomFilterAttribute));
-                    setupAction.ReturnHttpNotAcceptable = true;                   
-                   // setupAction.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());
-                   // setupAction.InputFormatters.Add(new XmlDataContractSerializerInputFormatter());
-                }).SetCompatibilityVersion(CompatibilityVersion.Version_2_1)
-                .AddJsonOptions(options =>
-                {
-                    options.SerializerSettings.ContractResolver =
-                    new CamelCasePropertyNamesContractResolver();
-                });
-
+           
             //API Version
             services.AddApiVersioning(
                 o =>
@@ -177,7 +177,7 @@
             {
                 app.UseDeveloperExceptionPage();
 
-               
+
             }
             else
             {

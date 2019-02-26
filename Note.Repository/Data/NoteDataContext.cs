@@ -91,7 +91,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                     on.archive_path = rdr2["archive_path"].ToString();
                     on.service_code = rdr2["service_code"].ToString();
                     on.practice_id = Convert.ToInt16(rdr2["practice_id"]);
-                    on.freshness = Convert.ToDateTime(rdr2["freshness"]);
+                    on.freshness = rdr2["freshness"].ToString();
                     on.surface_detail = rdr2["surface_detail"].ToString();
                     on.surface = rdr2["surface"].ToString();
 
@@ -171,7 +171,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                             {
 
                                 string query1 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
-                                   opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description,operatoryNotes.tooth,operatoryNotes.surface,operatoryNotes.color, operatoryNotes.note, "T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
+                                   opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description,operatoryNotes.tooth,operatoryNotes.surface,operatoryNotes.color, operatoryNotes.note,"T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
 
                                 OdbcCommand cmd2 = new OdbcCommand(query1, con);
                                   rows = cmd2.ExecuteNonQuery();
@@ -249,7 +249,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                         {
                           
                             string query3 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
-                                 opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.tooth, operatoryNotes.surface, operatoryNotes.color, operatoryNotes.note, "T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
+                                 opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.tooth, operatoryNotes.surface, operatoryNotes.color, operatoryNotes.note,"T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
                             OdbcCommand cmd3 = new OdbcCommand(query3, con);
                              rows = cmd3.ExecuteNonQuery();
 

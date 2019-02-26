@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace Note.API.Common.Helpers
 {
+    using Microsoft.AspNetCore.Mvc.ModelBinding;
+    using System;
+
     public class UnprocessableEntityObjectResult : ObjectResult
     {
         public UnprocessableEntityObjectResult(ModelStateDictionary modelState) : base(new SerializableError(modelState))

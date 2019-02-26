@@ -71,7 +71,7 @@
         [MaxLength(1)]
         public char post_proc_status { set; get; }
 
-        public String date_modified { set; get; }
+        public string date_modified { set; get; }
 
         [MaxLength(3)]
         public string modified_by { set; get; }
@@ -110,7 +110,7 @@
 
         public short practice_id { set; get; }
 
-        public DateTime freshness { set; get; }
+        public string freshness { set; get; }
 
         [MaxLength(23)]
         public string surface_detail { set; get; }
