@@ -170,7 +170,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                             if (operatoryNotes.note_id != 0 && operatoryNotes.note_type != "N")
                             {
 
-                                string query1 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
+                                string query1 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}',modified_by='{3}, date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
                                    opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description,operatoryNotes.tooth,operatoryNotes.surface,operatoryNotes.color, operatoryNotes.note,"T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
 
                                 OdbcCommand cmd2 = new OdbcCommand(query1, con);
@@ -201,7 +201,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.color);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.post_proc_status);
                                 cmd.Parameters.AddWithValue("?", dateTimeNow);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.modified_by);
+                                cmd.Parameters.AddWithValue("?", operatoryNotes.user_id); //same as user_id/provider_id
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.locked_eod);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.status);
                                 cmd.Parameters.AddWithValue("?", operatoryNotes.tooth_data);
@@ -248,7 +248,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                         if (operatoryNotes.note_id != 0 && operatoryNotes.note_type != "N")
                         {
                           
-                            string query3 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
+                            string query3 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}',modified_by='{3}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
                                  opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.tooth, operatoryNotes.surface, operatoryNotes.color, operatoryNotes.note,"T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
                             OdbcCommand cmd3 = new OdbcCommand(query3, con);
                              rows = cmd3.ExecuteNonQuery();
@@ -275,7 +275,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.color);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.post_proc_status);
                             cmd4.Parameters.AddWithValue("?", dateTimeNow);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.modified_by);
+                            cmd4.Parameters.AddWithValue("?", operatoryNotes.user_id);//same as user_id/provider_id
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.locked_eod);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.status);
                             cmd4.Parameters.AddWithValue("?", operatoryNotes.tooth_data);

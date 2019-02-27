@@ -10,10 +10,52 @@
         public APIMappingProfile()
         {
                      //Mapping First name and last name as name.           
-
-            CreateMap<DC.OperatoryNotesUpdateDto, RP.operatory_notes>();
-           //.ForMember(dest => dest.provider_id, opt => opt.MapFrom(src =>
-              //  $"{src.user_id}"));
+                    
+            CreateMap<DC.OperatoryNotesUpdateDto, RP.operatory_notes>()
+           .ForMember(dest => dest.note_id, opt => opt.MapFrom(src =>
+                $"{src.Id}"))
+                 .ForMember(dest => dest.patient_id, opt => opt.MapFrom(src =>
+                $"{src.PatientId}"))
+               .ForMember(dest => dest.user_id, opt => opt.MapFrom(src =>
+               $"{src.UserId}"))
+               .ForMember(dest => dest.note_class, opt => opt.MapFrom(src =>
+              $"{src.NoteClass}"))
+              .ForMember(dest => dest.note_type, opt => opt.MapFrom(src =>
+             $"{src.NoteType}"))
+             .ForMember(dest => dest.note, opt => opt.MapFrom(src =>
+            $"{src.Note}"))
+            .ForMember(dest => dest.color, opt => opt.MapFrom(src =>
+           $"{src.Color}"))
+           .ForMember(dest => dest.post_proc_status, opt => opt.MapFrom(src =>
+            $"{src.PostProcStatus}"))
+            .ForMember(dest => dest.locked_eod, opt => opt.MapFrom(src =>
+             $"{src.LockedEod}"))
+           .ForMember(dest => dest.status, opt => opt.MapFrom(src =>
+            $"{src.Status}"))
+           .ForMember(dest => dest.tooth_data, opt => opt.MapFrom(src =>
+            $"{src.ToothData}"))
+          .ForMember(dest => dest.claim_id, opt => opt.MapFrom(src =>
+           $"{src.ClaimID}"))
+          .ForMember(dest => dest.statement_yn, opt => opt.MapFrom(src =>
+           $"{src.StatementYn}"))
+           .ForMember(dest => dest.resp_party_id, opt => opt.MapFrom(src =>
+             $"{src.RespPartyId}"))
+           .ForMember(dest => dest.tooth, opt => opt.MapFrom(src =>
+            $"{src.Tooth}"))
+          .ForMember(dest => dest.tran_num, opt => opt.MapFrom(src =>
+           $"{src.TranNum}"))
+          .ForMember(dest => dest.archive_name, opt => opt.MapFrom(src =>
+           $"{src.ArchiveName}"))
+          .ForMember(dest => dest.archive_path, opt => opt.MapFrom(src =>
+           $"{src.ArchivePath}"))
+           .ForMember(dest => dest.service_code, opt => opt.MapFrom(src =>
+            $"{src.ServiceCode}"))
+            .ForMember(dest => dest.practice_id, opt => opt.MapFrom(src =>
+             $"{src.ClinicID}"))
+            .ForMember(dest => dest.surface_detail, opt => opt.MapFrom(src =>
+             $"{src.SurfaceDetail}"))
+           .ForMember(dest => dest.surface, opt => opt.MapFrom(src =>
+            $"{src.Surface}"));
             #region Operatory Notes
             CreateMap<RP.operatory_notes, DC.OperatoryNotes>()
                 .AfterMap((rpnotes, dcnotes) => dcnotes.Patient = new DC.Patient

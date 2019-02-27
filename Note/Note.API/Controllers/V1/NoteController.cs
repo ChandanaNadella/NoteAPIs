@@ -113,31 +113,25 @@
             {
                 if (!ModelState.IsValid)
                 {
+                    if (!_typeHelperService.TypeHasProperties<DC.OperatoryNotes>(notesData.Fields))
+                    {
+                        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                        _logger.LogInformation("-----------------------------------------------------------------------------");
+                        _logger.LogError(string.Format("Date : {0}, Error Status Code: 422, Error Status Message: Unprocessable Entity", DateTime.Now.ToString()));
+                        _logger.LogInformation(message);
+                        _logger.LogInformation("-----------------------------------------------------------------------------");
+
+                       
+                    }
+
                     return new Common.Helpers.UnprocessableEntityObjectResult(ModelState);
                 }
 
-                if (notesData.OperatoryNoteRequest.ClinicId == null || notesData.OperatoryNoteRequest.PatientId == null || notesData.OperatoryNoteRequest.UserId == null)
+                else
                 {
-                    _logger.LogInformation("-----------------------------------------------------------------------------");
-                    _logger.LogError(string.Format("Date : {0}, Error Status Code: 400, Error Status Message: Bad Request", DateTime.Now.ToString()));
-                    _logger.LogInformation("-----------------------------------------------------------------------------");
+                    var result = _noteService.getNotes(notesData);
 
-                    return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
-
-                }
-
-                if (!_typeHelperService.TypeHasProperties<DC.OperatoryNotes>(notesData.Fields))
-                {
-                    _logger.LogInformation("-----------------------------------------------------------------------------");
-                    _logger.LogError(string.Format("Date : {0}, Error Status Code: 400, Error Status Message: Bad Request", DateTime.Now.ToString()));
-                    _logger.LogInformation("-----------------------------------------------------------------------------");
-
-                    return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("400", "Bad Request")));
-                }
-
-                var result = _noteService.getNotes(notesData);
-
-                // To get the page links of next page and previous page.
+                    // To get the page links of next page and previous page.
 
                     var prevPageLink = result.HasPrevious ?
                 CreateNoteResourceUri(notesData,
@@ -159,22 +153,23 @@
 
                     Response.Headers.Add("X-Pagination",
                         Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
-
-                // To log the errors in error log file in C drive.
-
-                if ((result == null) || (result.Count() == 0))
-                {
+                    if ((result == null) || (result.Count() == 0))
+                    {
                         _logger.LogInformation("-----------------------------------------------------------------------------");
-                        _logger.LogError(string.Format("Date : {0}, Error Status Code: 404, Error Status Message: Not Found", DateTime.Now.ToString()));
+                        _logger.LogError(string.Format("Date : {0}, Error Status Code: 204, Error Status Message: No Content", DateTime.Now.ToString()));
                         _logger.LogInformation("-----------------------------------------------------------------------------");
-                     
 
-                    return NotFound(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("404", "Not Found")));
+
+                        return NotFound(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("204", "No Content")));
+                    }
+
+                    var noteMappedList = Mapper.Map<IEnumerable<OperatoryNotes>>(result);
+
+                    return Ok(new ApiSuccessResponseData(true, noteMappedList.ShapeData(notesData.Fields), new KeyValuePair<string, string>("200", "Success")));
+
+
                 }
 
-                var noteMappedList = Mapper.Map<IEnumerable<OperatoryNotes>>(result);
-
-                return Ok(new ApiSuccessResponseData(true, noteMappedList.ShapeData(notesData.Fields), new KeyValuePair<string, string>("200","Success")));
             }
 
             // Exception handling
@@ -221,7 +216,7 @@
             else
             {
                 var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
-                var isAffected = _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, opNotesDto.note_type);
+                var isAffected = _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, opNotesDto.NoteClass);
 
                 if(isAffected == true)
                 {

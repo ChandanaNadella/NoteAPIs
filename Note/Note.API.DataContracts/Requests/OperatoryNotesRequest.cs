@@ -10,15 +10,18 @@ namespace Note.API.DataContracts.Requests
 {
     public class OperatoryNotesRequest
     {
-        [Required(ErrorMessage = AlertMessages.ClinicId_Required)]
+
+        [Required(ErrorMessage = AlertMessages.clinicId_Required)]
+        [RegularExpression("^[1-9]\\d*$", ErrorMessage = AlertMessages.clinicId_Invalid)]
         public string ClinicId { get; set; }
 
-        [Required(ErrorMessage = AlertMessages.PatientId_Required)]
-        [MaxLength(5, ErrorMessage = AlertMessages.PatientId_Invalid)]
+
+        [Required(ErrorMessage = AlertMessages.patientId_Required)]
+        [RegularExpression("^([0-9]{1,5})", ErrorMessage = AlertMessages.patientId_Invalid)]
         public string PatientId { get; set; }
 
-        [Required(ErrorMessage = AlertMessages.ProviderId_Required)]
-        [MaxLength(3, ErrorMessage = AlertMessages.ProviderId_Invalid)]
+        [Required(ErrorMessage = AlertMessages.providerId_Required)]
+        [RegularExpression("^([a-zA-Z0-9]{1,3})", ErrorMessage = AlertMessages.providerId_Invalid)]
         public string UserId { get; set; }
     }
 }
