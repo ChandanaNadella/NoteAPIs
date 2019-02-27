@@ -17,7 +17,7 @@ namespace Note.API.DataContracts.Responses
             else
             {
                 Success = isSucess;
-                Payload = null;
+                Payload = data;
                 Status = new
                 {
                     Code = statusCode.Key,

@@ -110,10 +110,10 @@
         [HttpGet(Name = "GetPatientNotes")]
         public IActionResult GetPatientNotes([FromQuery]NoteResourceParameter notesData)
         {
-            try
+          try
             {
 
-                if (notesData == null)
+                if (notesData.OperatoryNoteRequest.ClinicId == null && notesData.OperatoryNoteRequest.PatientId == null && notesData.OperatoryNoteRequest.UserId == null)
                 {
                     _logger.LogInformation("-----------------------------------------------------------------------------");
                     _logger.LogError(string.Format("Date : {0},Request object can not be NULL, Error Status Code: {1}, Error Status Message: {2}", DateTime.Now.ToString(), BadRequestResponse.Code, BadRequestResponse.Message));
