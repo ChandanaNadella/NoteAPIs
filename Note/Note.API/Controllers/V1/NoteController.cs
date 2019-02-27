@@ -216,7 +216,7 @@
             else
             {
                 var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
-                var isAffected = _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, opNotesDto.NoteClass);
+                var isAffected = _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, opNotesDto.note_class);
 
                 if(isAffected == true)
                 {

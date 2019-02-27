@@ -9,74 +9,76 @@
         [Key]
         [Required (ErrorMessage = AlertMessages.noteId_Required)]
         [RegularExpression("^[0-9]\\d*$", ErrorMessage = AlertMessages.noteId_Invalid)]
-        public int Id { set; get; }
+        public int note_id { set; get; }
 
+ 
         [Required(ErrorMessage = AlertMessages.patientId_Required)]
         [RegularExpression("^([0-9]{1,5})", ErrorMessage = AlertMessages.patientId_Invalid)]
-        public string PatientId { set; get; }
+        public string patient_id { set; get; }
 
         [Required(ErrorMessage = AlertMessages.providerId_Required)]
         [RegularExpression("^([a-zA-Z0-9]{1,3})", ErrorMessage = AlertMessages.providerId_Invalid)]
-        public string UserId { set; get; }
+        public string user_id { set; get; }
+
 
         [RegularExpression("^([a-zA-Z])", ErrorMessage = AlertMessages.noteclass_Invalid)]
-        public string NoteClass { set; get; }
+        public string note_class { set; get; }
 
         [Required(ErrorMessage = AlertMessages.noteType_Required)]
         [RegularExpression("^([a-zA-Z0-9])", ErrorMessage = AlertMessages.noteType_Invalid)]
-        public string NoteType { set; get; }
+        public string note_type { set; get; }
 
-        public string Note { set; get; }
+        public string note { set; get; }
 
         [RegularExpression("^[0-9]\\d*$", ErrorMessage = AlertMessages.color_Invalid)]
-        public int Color { set; get; }
+        public int color { set; get; }
 
         [RegularExpression("^([a-zA-Z])", ErrorMessage = AlertMessages.post_proc_status_Invalid)]
-        public string PostProcStatus { set; get; }
+        public string post_proc_status { set; get; }
 
         [RegularExpression("^[1-9]\\d*$", ErrorMessage = AlertMessages.locked_Eod_Invalid)]
-        public int LockedEod { set; get; }
+        public int locked_eod { set; get; }
 
         [RegularExpression("^([a-zA-Z])", ErrorMessage = AlertMessages.status_Invalid)]
-        public string Status { set; get; }
+        public string status { set; get; }
 
         [RegularExpression("^([a-zA-Z]{1,55})", ErrorMessage = AlertMessages.tooth_data_Invalid)]
-        public string ToothData { set; get; }
+        public string tooth_data { set; get; }
 
         //DEFAULT Value = -1
         [RegularExpression("^-?[0-9]\\d*$", ErrorMessage = AlertMessages.claimId_Invalid)]
-        public int ClaimID { set; get; }
+        public int claim_id { set; get; }
 
         [RegularExpression("^([a-zA-Z])", ErrorMessage = AlertMessages.statement_yn_Invalid)]
         //DEFAULT Value = N
-        public string StatementYn { set; get; }
+        public string statement_yn { set; get; }
 
         [RegularExpression("^([0-9]{1,5})", ErrorMessage = AlertMessages.resp_party_id_Invalid)]
-        public string RespPartyId { set; get; }
+        public string resp_party_id { set; get; }
 
         [RegularExpression("^([a-zA-Z0-9]{1,10})", ErrorMessage = AlertMessages.tooth_Invalid)]
-        public string Tooth { set; get; }
+        public string tooth { set; get; }
 
         [RegularExpression("^[1-9]\\d*$", ErrorMessage = AlertMessages.tranNum_Invalid)]
-        public int TranNum { set; get; }
+        public int tran_num { set; get; }
 
         [RegularExpression("^([a-zA-Z0-9]{1,40})", ErrorMessage = AlertMessages.archive_name_Invalid)]
-        public string ArchiveName { set; get; }
+        public string archive_name { set; get; }
 
         [RegularExpression("^([a-zA-Z0-9]{1,4000})", ErrorMessage = AlertMessages.archive_path_Invalid)]
-        public string ArchivePath { set; get; }
+        public string archive_path { set; get; }
 
         [RegularExpression("^([a-zA-Z0-9]{1,5})", ErrorMessage = AlertMessages.service_code_Invalid)]
-        public string ServiceCode { set; get; }
+        public string service_code { set; get; }
 
         [RegularExpression("^[1-9]\\d*$", ErrorMessage = AlertMessages.clinicId_Invalid)]
-        public short ClinicID { set; get; }
+        public short practice_id { set; get; }
 
 
         [RegularExpression("^([a-zA-Z]{1,23})", ErrorMessage = AlertMessages.surface_detail_Invalid)]
-        public string SurfaceDetail { set; get; }
+        public string surface_detail { set; get; }
 
         [RegularExpression("^([a-zA-Z0-9]{1,8})", ErrorMessage = AlertMessages.surface_Invalid)]
-        public string Surface { set; get; }
+        public string surface { set; get; }
     }
 }
