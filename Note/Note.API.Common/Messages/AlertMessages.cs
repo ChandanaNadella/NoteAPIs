@@ -7,18 +7,18 @@
         public const string providerId_Required = "Provider Id /User Id is Required Field.";
         public const string noteType_Required = "Note Type is Required Field.";
         public const string noteId_Required = "Note Id is Required Field.";
-        
+
 
         public const string patientId = "Patient Id should not have more than 5 characters.";
-        public const string providerId ="Provider Id should not have more than 5 characters.";
+        public const string providerId = "Provider Id should not have more than 5 characters.";
         public const string noteclass = "Note Class should be T.";
         public const string noteType = "Note Type should have only one character.";
         public const string post_proc_status = "Post_proc_status should have only one character.";
         public const string status = "Status should have only one character.";
         public const string tooth_data = "Tooth Data should not have more than 55 characters.";
-        public const string statement_yn= "Statement should have only one character.";
+        public const string statement_yn = "Statement should have only one character.";
         public const string resp_party_id = "Resp Party Id By should not have more than 5 characters.";
-        public const string  tooth = "Tooth should not have more than 10 characters.";
+        public const string tooth = "Tooth should not have more than 10 characters.";
         public const string archive_name = "Archive Name should not have more than 40 characters.";
         public const string archive_path = "Archive Path should not have more than 4000 characters.";
         public const string service_code = "Service Code  should not have more than 5 characters.";
@@ -48,6 +48,42 @@
         public const string surface_detail_Invalid = "Surface Detail  is Invalid.";
         public const string surface_Invalid = "Surface is Invalid.";
 
+
+    }
+    //Api Response Error Code and messages
+    public static  class SuccessResponse
+    {
+        public const string Code = "200";
+
+        public const string Message = "OK";
+        
+    }
+    public static class BadRequestResponse
+    {
+        public const string Code = "400";
+
+        public const string Message = "Bad Request";
+
+    }
+    public static class NotFoundResponse
+    {
+        public const string Code = "404";
+
+        public const string Message = "Not Found";
+
+    }
+    public static class NoContentResponse
+    {
+        public const string Code = "204";
+
+        public const string Message = "No Content";
+
+    }
+    public static class UnprocessableEntityResponse
+    {
+        public const string Code = "422";
+
+        public const string Message = "Unprocessable Entity";
 
     }
 }

@@ -1,19 +1,28 @@
-﻿using Microsoft.AspNetCore.Mvc;
-namespace Note.API.Common.Helpers
+﻿namespace Note.API.Common.Helpers
 {
     using Microsoft.AspNetCore.Mvc.ModelBinding;
+    using System.Collections.Generic;
+    using Microsoft.AspNetCore.Mvc;
     using System;
 
     public class UnprocessableEntityObjectResult : ObjectResult
     {
-        public UnprocessableEntityObjectResult(ModelStateDictionary modelState) : base(new SerializableError(modelState))
+        public UnprocessableEntityObjectResult(ModelStateDictionary modelState) : base(new
+        {
+            Success = false,
+            Payload = new SerializableError(modelState),
+            Status = new
+            {
+                Code = "422",
+                Message = "Unprocessable Entity"
+            }
+        })
         {
             if (modelState == null)
             {
-                //_logger.LogError(string.Format("Date : {0}, Error Status Code: 400, Error Status Message: Bad Request", DateTime.Now.ToString()));
-                //_logger.LogInformation("-----------------------------------------------------------------------------");
                 throw new ArgumentNullException(nameof(modelState));
             }
+
             StatusCode = 422;
         }
     }

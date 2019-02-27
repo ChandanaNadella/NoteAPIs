@@ -2,6 +2,7 @@
 {
     using API.Common.Extensions;
     using API.Common.Helpers;
+    using API.Common.Messages;
     using API.Common.Settings;
     using API.DataContracts;
     using API.DataContracts.Responses;
@@ -111,64 +112,95 @@
         {
             try
             {
-                if (!ModelState.IsValid)
+
+                if (notesData == null)
                 {
-                    if (!_typeHelperService.TypeHasProperties<DC.OperatoryNotes>(notesData.Fields))
-                    {
-                        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-                        _logger.LogInformation("-----------------------------------------------------------------------------");
-                        _logger.LogError(string.Format("Date : {0}, Error Status Code: 422, Error Status Message: Unprocessable Entity", DateTime.Now.ToString()));
-                        _logger.LogInformation(message);
-                        _logger.LogInformation("-----------------------------------------------------------------------------");
+                    _logger.LogInformation("-----------------------------------------------------------------------------");
+                    _logger.LogError(string.Format("Date : {0},Request object can not be NULL, Error Status Code: {1}, Error Status Message: {2}", DateTime.Now.ToString(), BadRequestResponse.Code, BadRequestResponse.Message));
+                    _logger.LogInformation("-----------------------------------------------------------------------------");
+                    return BadRequest(new ApiErrorResponseData(false, "Request object can not be NULL.", new KeyValuePair<string, string>(BadRequestResponse.Code, BadRequestResponse.Message)));
 
-                       
-                    }
 
-                    return new Common.Helpers.UnprocessableEntityObjectResult(ModelState);
                 }
 
                 else
                 {
-                    var result = _noteService.getNotes(notesData);
-
-                    // To get the page links of next page and previous page.
-
-                    var prevPageLink = result.HasPrevious ?
-                CreateNoteResourceUri(notesData,
-                ResourceUriType.PreviousPage) : null;
-
-                    var nxtPageLink = result.HasNext ?
-                        CreateNoteResourceUri(notesData,
-                        ResourceUriType.NextPage) : null;
-
-                    var paginationMetadata = new
+                    if (!ModelState.IsValid)
                     {
-                        totalCount = result.TotalCount,
-                        pageSize = result.PageSize,
-                        currentPage = result.CurrentPage,
-                        totalPages = result.TotalPages,
-                        previousPageLink = prevPageLink,
-                        nextPageLink = nxtPageLink
-                    };
+                        if (!_typeHelperService.TypeHasProperties<DC.OperatoryNotes>(notesData.Fields))
+                        {
+                            _logger.LogInformation("-----------------------------------------------------------------------------");
+                            _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message: {2}", DateTime.Now.ToString(), BadRequestResponse.Code, BadRequestResponse.Message));
+                            _logger.LogInformation("-----------------------------------------------------------------------------");
 
-                    Response.Headers.Add("X-Pagination",
-                        Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
-                    if ((result == null) || (result.Count() == 0))
-                    {
-                        _logger.LogInformation("-----------------------------------------------------------------------------");
-                        _logger.LogError(string.Format("Date : {0}, Error Status Code: 204, Error Status Message: No Content", DateTime.Now.ToString()));
-                        _logger.LogInformation("-----------------------------------------------------------------------------");
+                            return BadRequest(new ApiErrorResponseData(false, "Request field(s) not found.", new KeyValuePair<string, string>(BadRequestResponse.Code, BadRequestResponse.Message)));
 
 
-                        return NotFound(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("204", "No Content")));
+                        }
+                        else
+                        {
+                            var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+                            _logger.LogInformation("-----------------------------------------------------------------------------");
+                            _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message: {2}", DateTime.Now.ToString(), UnprocessableEntityResponse.Code, UnprocessableEntityResponse.Message));
+                            _logger.LogInformation(message);
+                            _logger.LogInformation("-----------------------------------------------------------------------------");
+
+                            return new Common.Helpers.UnprocessableEntityObjectResult(ModelState);
+
+                        }
+
                     }
 
-                    var noteMappedList = Mapper.Map<IEnumerable<OperatoryNotes>>(result);
+                    else
+                    {
+                        var result = _noteService.getNotes(notesData);
 
-                    return Ok(new ApiSuccessResponseData(true, noteMappedList.ShapeData(notesData.Fields), new KeyValuePair<string, string>("200", "Success")));
+                        // To get the page links of next page and previous page.
 
+                        var prevPageLink = result.HasPrevious ?
+                    CreateNoteResourceUri(notesData,
+                    ResourceUriType.PreviousPage) : null;
+
+                        var nxtPageLink = result.HasNext ?
+                            CreateNoteResourceUri(notesData,
+                            ResourceUriType.NextPage) : null;
+
+                        var paginationMetadata = new
+                        {
+                            totalCount = result.TotalCount,
+                            pageSize = result.PageSize,
+                            currentPage = result.CurrentPage,
+                            totalPages = result.TotalPages,
+                            previousPageLink = prevPageLink,
+                            nextPageLink = nxtPageLink
+                        };
+
+                        Response.Headers.Add("X-Pagination",
+                            Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
+                        if ((result == null) || (result.Count() == 0))
+                        {
+                            _logger.LogInformation("-----------------------------------------------------------------------------");
+                            _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message:{2}", DateTime.Now.ToString(), NoContentResponse.Code, NoContentResponse.Message));
+                            _logger.LogInformation("-----------------------------------------------------------------------------");
+
+
+                            return NotFound(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(NoContentResponse.Code, NoContentResponse.Message)));
+                        }
+                        else
+                        {
+                            var noteMappedList = Mapper.Map<IEnumerable<OperatoryNotes>>(result);
+
+                            return Ok(new ApiSuccessResponseData(true, noteMappedList.ShapeData(notesData.Fields), new KeyValuePair<string, string>(SuccessResponse.Code, SuccessResponse.Message)));
+
+                        }
+
+
+
+                    }
 
                 }
+
+               
 
             }
 
@@ -196,43 +228,65 @@
         [HttpPost(Name = "PostInsertUpdateOperatoryNotes")]
         public IActionResult PostInsertUpdateOperatoryNotes(OperatoryNotesUpdateDto opNotesDto, int? autoNoteId)
         {
-            if(!ModelState.IsValid)
+            try
             {
-
-
-                var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
-
-                _logger.LogInformation("-----------------------------------------------------------------------------");
-                _logger.LogError(string.Format("Date : {0}, Error Status Code: 422, Error Status Message: Unprocessable Entity", DateTime.Now.ToString()));
-                _logger.LogInformation(message);
-                    _logger.LogInformation("-----------------------------------------------------------------------------");
-
-
-                return new Common.Helpers.UnprocessableEntityObjectResult(ModelState);
-
-            }
-           
-
-            else
-            {
-                var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
-                var isAffected = _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, opNotesDto.note_class);
-
-                if(isAffected == true)
+                if (opNotesDto == null)
                 {
-                    return Ok(new ApiSuccessResponseData(true, opNotesDto, new KeyValuePair<string, string>("200", "Success")));
+                    _logger.LogInformation("-----------------------------------------------------------------------------");
+                    _logger.LogError(string.Format("Date : {0},Request object can not be NULL, Error Status Code: {1}, Error Status Message: {2}", DateTime.Now.ToString(), BadRequestResponse.Code, BadRequestResponse.Message));
+                    _logger.LogInformation("-----------------------------------------------------------------------------");
+                    return BadRequest(new ApiErrorResponseData(false, "Request object can not be NULL.", new KeyValuePair<string, string>(BadRequestResponse.Code, BadRequestResponse.Message)));
                 }
                 else
                 {
-                    _logger.LogInformation("-----------------------------------------------------------------------------");
-                    _logger.LogError(string.Format("Date : {0}, Error Status Code: 204, Error Status Message: No Content", DateTime.Now.ToString()));
-                    _logger.LogInformation("-----------------------------------------------------------------------------");
 
-                    return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>("204", "No Content")));
+                    if (!ModelState.IsValid)
+                    {
+
+
+                        var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
+
+                        _logger.LogInformation("-----------------------------------------------------------------------------");
+                        _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message: {2}", DateTime.Now.ToString(), UnprocessableEntityResponse.Code, UnprocessableEntityResponse.Message));
+                        _logger.LogInformation(message);
+                        _logger.LogInformation("-----------------------------------------------------------------------------");
+
+
+                        return new Common.Helpers.UnprocessableEntityObjectResult(ModelState);
+
+                    }
+                    else
+                    {
+                        var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
+                        var isAffected = _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, opNotesDto.note_class);
+
+                        if (isAffected == true)
+                        {
+                            return Ok(new ApiSuccessResponseData(true, opNotesDto, new KeyValuePair<string, string>(SuccessResponse.Code, SuccessResponse.Message)));
+                        }
+                        else
+                        {
+                            _logger.LogInformation("-----------------------------------------------------------------------------");
+                            _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message: {2}", DateTime.Now.ToString(), NoContentResponse.Code, NoContentResponse.Message));
+                            _logger.LogInformation("-----------------------------------------------------------------------------");
+
+                            return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(NoContentResponse.Code, NoContentResponse.Message)));
+
+                        }
+
+                    }
+
 
                 }
-               
+
             }
+
+            // Exception handling
+            catch (Exception ex)
+            {
+
+            }
+            return null;
 
         }
         #endregion
