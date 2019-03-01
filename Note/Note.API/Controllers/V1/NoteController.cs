@@ -110,7 +110,7 @@
         [HttpGet(Name = "GetPatientNotes")]
         public IActionResult GetPatientNotes([FromQuery]NoteResourceParameter notesData)
         {
-          try
+           try
             {
 
                 if (notesData.OperatoryNoteRequest.ClinicId == null && notesData.OperatoryNoteRequest.PatientId == null && notesData.OperatoryNoteRequest.UserId == null)

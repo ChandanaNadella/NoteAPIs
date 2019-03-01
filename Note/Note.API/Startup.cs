@@ -24,7 +24,6 @@
     using Note.Repository.Data;
     using Note.Services;
     using Note.Services.Contracts;
-    using Note.Services.Services;
     using Swashbuckle.AspNetCore.Swagger;
     using System.IO;
     using System.Reflection;
@@ -147,7 +146,6 @@
 
             //Custom services (.NET CORE 2.1)
             services.AddTransient<INoteService, NoteService>();
-            services.AddTransient<ITokenService, TokenService>();
             services.AddTransient<IPropertyMappingService, PropertyMappingService>();
             services.AddTransient<ITypeHelperService, TypeHelperService>();
         
