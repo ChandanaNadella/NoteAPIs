@@ -99,20 +99,20 @@
 
         #region Methods
 
+
+        #region GET
         /// <summary>
         /// To get data based on ClinicId,PatientId,UserId from the operatorynotes table.
         /// </summary>
         /// <param name="notesData"></param>
         /// <returns>operatorynotes table filtered by ClinicId,PatientId,UserId </returns>
 
-        #region GET
-
         [HttpGet(Name = "GetPatientNotes")]
         public IActionResult GetPatientNotes([FromQuery]NoteResourceParameter notesData)
         {
-           try
+            try
             {
-
+                
                 if (notesData.OperatoryNoteRequest.ClinicId == null && notesData.OperatoryNoteRequest.PatientId == null && notesData.OperatoryNoteRequest.UserId == null)
                 {
                     _logger.LogInformation("-----------------------------------------------------------------------------");
@@ -179,12 +179,24 @@
                             Newtonsoft.Json.JsonConvert.SerializeObject(paginationMetadata));
                         if ((result == null) || (result.Count() == 0))
                         {
-                            _logger.LogInformation("-----------------------------------------------------------------------------");
-                            _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message:{2}", DateTime.Now.ToString(), NoContentResponse.Code, NoContentResponse.Message));
-                            _logger.LogInformation("-----------------------------------------------------------------------------");
+                            if (SettingsExtensions.IsDBConnected)
+                            {
+                                _logger.LogInformation("-----------------------------------------------------------------------------");
+                                _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message:{2}", DateTime.Now.ToString(), NoContentResponse.Code, NoContentResponse.Message));
+                                _logger.LogInformation("-----------------------------------------------------------------------------");
 
 
-                            return NotFound(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(NoContentResponse.Code, NoContentResponse.Message)));
+                                return NotFound(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(NoContentResponse.Code, NoContentResponse.Message)));
+                            }
+                            else
+                            {
+                                _logger.LogInformation("-----------------------------------------------------------------------------");
+                                _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message:{2}", DateTime.Now.ToString(), NoContentResponse.Code, NoContentResponse.Message));
+                                _logger.LogInformation("-----------------------------------------------------------------------------");
+
+
+                                return StatusCode(InternalServerError.Code, new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(InternalServerError.CodeString, InternalServerError.DBConFailedMessage)));
+                            }
                         }
                         else
                         {
@@ -203,7 +215,7 @@
                
 
             }
-
+            
             // Exception handling
             catch (Exception ex)
             {

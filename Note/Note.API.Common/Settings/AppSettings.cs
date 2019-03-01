@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Note.API.Common.Settings
+﻿namespace Note.API.Common.Settings
 {
     public class AppSettings
     {
@@ -10,6 +6,8 @@ namespace Note.API.Common.Settings
         public Swagger Swagger { get; set; }
 
         public string ConnectionString { get; set; }
+
+        public bool IsDatabaseConnected { get; set; }
 
         public string Secret { get; set; }
     }

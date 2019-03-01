@@ -48,74 +48,87 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
 
                 OdbcCommand cmd2 = new OdbcCommand(query2, con);
 
-
-
-                con.Open();
-
-                OdbcDataReader rdr1 = cmd1.ExecuteReader();
-
-                while (rdr1.Read())
+                try
                 {
-                    totalCount = Convert.ToInt32(rdr1["totalCount"]);
+                    con.Open();
+                    if (con.State == System.Data.ConnectionState.Open)
+                    {
+                        SettingsExtensions.IsDBConnected = true;
+                    }
+
+                    OdbcDataReader rdr1 = cmd1.ExecuteReader();
+
+                    while (rdr1.Read())
+                    {
+                        totalCount = Convert.ToInt32(rdr1["totalCount"]);
+                    }
+
+                    OdbcDataReader rdr2 = cmd2.ExecuteReader();
+
+                    while (rdr2.Read())
+                    {
+
+                        operatory_notes on = new operatory_notes();
+
+                        #region Operatory Data Table
+
+                        on.note_id = Convert.ToInt32(rdr2["note_id"]);
+                        on.date_entered = Convert.ToDateTime(rdr2["Date_entered"]);
+                        on.note_class = Convert.ToChar(rdr2["note_class"]);
+                        on.note_type = rdr2["note_type"].ToString();
+                        on.note_type_id = Convert.ToInt32(rdr2["note_type_id"]);
+                        on.description = rdr2["description"].ToString();
+                        on.note = rdr2["note"].ToString();
+                        on.color = Convert.ToInt32(rdr2["color"]);
+                        on.post_proc_status = Convert.ToChar(rdr2["post_proc_status"]);
+                        on.date_modified = rdr2["date_modified"].ToString();
+                        on.modified_by = rdr2["modified_by"].ToString();
+                        on.locked_eod = Convert.ToInt32(rdr2["locked_eod"]);
+                        on.status = Convert.ToChar(rdr2["status"]);
+                        on.tooth_data = rdr2["tooth_data"].ToString();
+                        on.claim_id = Convert.ToInt32(rdr2["claim_id"]);
+                        on.statement_yn = Convert.ToChar(rdr2["statement_yn"]);
+                        on.resp_party_id = rdr2["resp_party_id"].ToString();
+                        on.tooth = rdr2["tooth"].ToString();
+                        on.tran_num = Convert.ToInt32(rdr2["tran_num"]);
+                        on.archive_name = rdr2["archive_name"].ToString();
+                        on.archive_path = rdr2["archive_path"].ToString();
+                        on.service_code = rdr2["service_code"].ToString();
+                        on.practice_id = Convert.ToInt16(rdr2["practice_id"]);
+                        on.freshness = rdr2["freshness"].ToString();
+                        on.surface_detail = rdr2["surface_detail"].ToString();
+                        on.surface = rdr2["surface"].ToString();
+
+                        #endregion Operatory Data Table
+
+                        #region Patient Data Table
+
+                        on.patient_id = rdr2["patient_id"].ToString();
+                        on.patientFirstName = rdr2["patientFirstName"].ToString();
+                        on.patientLastName = rdr2["patientLastName"].ToString();
+
+                        #endregion Patient Data Table
+
+                        #region Provider Data Table
+
+                        on.provider_id = rdr2["user_id"].ToString();
+                        on.first_name = rdr2["first_name"].ToString();
+                        on.last_name = rdr2["last_name"].ToString();
+
+                        #endregion Provider Data Table
+                        lstNotes.Add(on);
+
+                    }
+
+                    con.Close();
                 }
-
-                OdbcDataReader rdr2 = cmd2.ExecuteReader();
-
-                while (rdr2.Read())
+                catch (Exception ex)
                 {
-
-                    operatory_notes on = new operatory_notes();
-
-                    #region Operatory Data Table
-
-                    on.note_id = Convert.ToInt32(rdr2["note_id"]);
-                    on.date_entered = Convert.ToDateTime(rdr2["Date_entered"]);
-                    on.note_class = Convert.ToChar(rdr2["note_class"]);
-                    on.note_type = rdr2["note_type"].ToString();
-                    on.note_type_id = Convert.ToInt32(rdr2["note_type_id"]);
-                    on.description = rdr2["description"].ToString();
-                    on.note = rdr2["note"].ToString();
-                    on.color = Convert.ToInt32(rdr2["color"]);
-                    on.post_proc_status = Convert.ToChar(rdr2["post_proc_status"]);
-                    on.date_modified = rdr2["date_modified"].ToString();
-                    on.modified_by = rdr2["modified_by"].ToString();
-                    on.locked_eod = Convert.ToInt32(rdr2["locked_eod"]);
-                    on.status = Convert.ToChar(rdr2["status"]);
-                    on.tooth_data = rdr2["tooth_data"].ToString();
-                    on.claim_id = Convert.ToInt32(rdr2["claim_id"]);
-                    on.statement_yn = Convert.ToChar(rdr2["statement_yn"]);
-                    on.resp_party_id = rdr2["resp_party_id"].ToString();
-                    on.tooth = rdr2["tooth"].ToString();
-                    on.tran_num = Convert.ToInt32(rdr2["tran_num"]);
-                    on.archive_name = rdr2["archive_name"].ToString();
-                    on.archive_path = rdr2["archive_path"].ToString();
-                    on.service_code = rdr2["service_code"].ToString();
-                    on.practice_id = Convert.ToInt16(rdr2["practice_id"]);
-                    on.freshness = rdr2["freshness"].ToString();
-                    on.surface_detail = rdr2["surface_detail"].ToString();
-                    on.surface = rdr2["surface"].ToString();
-
-                    #endregion Operatory Data Table
-
-                    #region Patient Data Table
-
-                    on.patient_id = rdr2["patient_id"].ToString();
-                    on.patientFirstName = rdr2["patientFirstName"].ToString();
-                    on.patientLastName = rdr2["patientLastName"].ToString();
-
-                    #endregion Patient Data Table
-
-                    #region Provider Data Table
-
-                    on.provider_id = rdr2["user_id"].ToString();
-                    on.first_name = rdr2["first_name"].ToString();
-                    on.last_name = rdr2["last_name"].ToString();
-
-                    #endregion Provider Data Table
-                    lstNotes.Add(on);
-                    
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error:Unable to connect to the database for GET notes api.");
+                    Console.ResetColor();
+                    SettingsExtensions.IsDBConnected = true;
                 }
-                con.Close();
             }
 
             return Tuple.Create(lstNotes, totalCount);

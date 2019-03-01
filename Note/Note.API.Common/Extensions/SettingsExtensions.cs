@@ -1,11 +1,12 @@
-﻿using Note.API.Common.Settings;
-using System.Diagnostics;
-
-namespace Note.API.Common.Extensions
+﻿namespace Note.API.Common.Extensions
 {
+    using Note.API.Common.Settings;
+    using System.Diagnostics;
+
     public static class SettingsExtensions
     {
         public static string DBConnectionString { get; set; }
+        public static bool IsDBConnected { get; set; }
 
         public static bool IsValid(this AppSettings data)
         {
@@ -44,6 +45,8 @@ namespace Note.API.Common.Extensions
             {
                 DBConnectionString = data.ConnectionString;
             }
+
+            IsDBConnected = data.IsDatabaseConnected;
 
 
             return result;

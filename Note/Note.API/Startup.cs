@@ -25,6 +25,8 @@
     using Note.Services;
     using Note.Services.Contracts;
     using Swashbuckle.AspNetCore.Swagger;
+    using System;
+    using System.Data.Odbc;
     using System.IO;
     using System.Reflection;
     using System.Text;
@@ -108,6 +110,31 @@
             {
                 //Enabling the DB Context with connection string in the Appsettings:
                 var connection = _appSettings.ConnectionString;
+
+                OdbcConnection conn = new OdbcConnection(connection);
+
+                Console.WriteLine("Testing Database connection...");
+                try
+                {
+                    conn.Open();
+                    if (conn.State == System.Data.ConnectionState.Open)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Success:Database connection established.");
+                        Console.ResetColor();
+                        _appSettings.IsDatabaseConnected = true;
+                    }
+                    conn.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Error:Unable to connect to the Database.");
+                    Console.ResetColor();
+                    _appSettings.IsDatabaseConnected = false;
+                }
+                
+
                 services.AddDbContext<NoteDataContext>(options => options.UseSqlServer(connection));
 
                 // configure jwt authentication

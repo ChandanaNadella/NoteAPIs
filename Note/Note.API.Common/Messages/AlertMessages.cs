@@ -58,6 +58,16 @@
         public const string Message = "OK";
         
     }
+
+    public static class InternalServerError
+    {
+        public const int Code = 500;
+        public const string CodeString = "500";
+
+        public const string Message = "An unexpected error happened ! Please try again later.";
+        public const string DBConFailedMessage = "Unable to connect the database.";
+    }
+
     public static class BadRequestResponse
     {
         public const string Code = "400";
