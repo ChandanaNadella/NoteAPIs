@@ -159,86 +159,100 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                     string querydesc = string.Format(@"Select  id, note_type, description from operatory_notes_type  where note_type='{0}'", noteType);
                     OdbcCommand cmd1 = new OdbcCommand(query, con);
                     OdbcCommand cmd5 = new OdbcCommand(querydesc, con);
-                    con.Open();
-                    OdbcDataReader rdr = cmd1.ExecuteReader();
-                    OdbcDataReader rdr1 = cmd5.ExecuteReader();
-
-                    while (rdr1.Read())
+                    try
                     {
-                        operatory_notes opn = new operatory_notes();
-                        opn.note_type_id = Convert.ToInt32(rdr1["id"]);
-                        opn.note_type = rdr1["note_type"].ToString();
-                        opn.description = rdr1["description"].ToString();
-
-                       
-
-                        while (rdr.Read())
+                        con.Open();
+                        if (con.State == System.Data.ConnectionState.Open)
                         {
-                            operatory_notes on = new operatory_notes();
-                            on.note = rdr["note_text"].ToString();
-
-
-                            // If AutoNote Id is passing from the Api to an Existing Note.
-
-                            if (operatoryNotes.note_id != 0 && operatoryNotes.note_type != "N")
-                            {
-
-                                string query1 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}',modified_by='{3}, date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
-                                   opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description,operatoryNotes.tooth,operatoryNotes.surface,operatoryNotes.color, operatoryNotes.note,"T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
-
-                                OdbcCommand cmd2 = new OdbcCommand(query1, con);
-                                  rows = cmd2.ExecuteNonQuery();
-
-                            }
-                            else
-                            {
-                                // If AutoNote Id is passing from the Api to an Fresh Note.
-
-                                string query2 = "Insert into operatory_notes (patient_id,Date_entered,user_id,note_class,note_type,note_type_id,description,note,color,post_proc_status,date_modified,modified_by,locked_eod,status,tooth_data,claim_id,statement_yn,resp_party_id,tooth,tran_num,archive_name,archive_path,service_code,practice_id,freshness,surface_detail,surface)  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";//, $data['patient_id'],$Date_entered,$user_id,$note_class,$note_type,$note_type_id,$description,$note,$color,$post_proc_status,$date_modified,$modified_by,$locked_eod,$status,$tooth_data,$claim_id,$statement_yn,$resp_party_id,$tooth,$tran_num,$archive_name,$archive_path,$service_code,$practice_id,$freshness,$surface_detail,$surface)";
-
-
-
-                                OdbcCommand cmd = new OdbcCommand(query2, con);
-                                #region Operatory Data Table
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.patient_id);
-                                cmd.Parameters.AddWithValue("?", dateTimeNow);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.user_id);
-                                cmd.Parameters.AddWithValue("?", "T");// Note class should be always T
-
-                                cmd.Parameters.AddWithValue("?", opn.note_type);
-                                cmd.Parameters.AddWithValue("?", opn.note_type_id);
-                                cmd.Parameters.AddWithValue("?", opn.description);
-
-                                cmd.Parameters.AddWithValue("?", on.note + operatoryNotes.note);
-
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.color);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.post_proc_status);
-                                cmd.Parameters.AddWithValue("?", dateTimeNow);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.user_id); //same as user_id/provider_id
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.locked_eod);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.status);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.tooth_data);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.claim_id);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.statement_yn);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.resp_party_id);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.tooth);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.tran_num);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.archive_name);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.archive_path);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.service_code);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.practice_id);
-                                cmd.Parameters.AddWithValue("?", dateTimeNow);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.surface_detail);
-                                cmd.Parameters.AddWithValue("?", operatoryNotes.surface);
-                                #endregion Operatory Data Table
-                                 rows = cmd.ExecuteNonQuery();
-
-
-                            }
-
+                            SettingsExtensions.IsDBConnected = true;
                         }
-                    }
+                        OdbcDataReader rdr = cmd1.ExecuteReader();
+                        OdbcDataReader rdr1 = cmd5.ExecuteReader();
+
+                        while (rdr1.Read())
+                        {
+                            operatory_notes opn = new operatory_notes();
+                            opn.note_type_id = Convert.ToInt32(rdr1["id"]);
+                            opn.note_type = rdr1["note_type"].ToString();
+                            opn.description = rdr1["description"].ToString();
+
+
+
+                            while (rdr.Read())
+                            {
+                                operatory_notes on = new operatory_notes();
+                                on.note = rdr["note_text"].ToString();
+
+
+                                // If AutoNote Id is passing from the Api to an Existing Note.
+
+                                if (operatoryNotes.note_id != 0 && operatoryNotes.note_type != "N")
+                                {
+
+                                    string query1 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}',modified_by='{3}, date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
+                                       opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.tooth, operatoryNotes.surface, operatoryNotes.color, operatoryNotes.note, "T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
+
+                                    OdbcCommand cmd2 = new OdbcCommand(query1, con);
+                                    rows = cmd2.ExecuteNonQuery();
+
+                                }
+                                else
+                                {
+                                    // If AutoNote Id is passing from the Api to an Fresh Note.
+
+                                    string query2 = "Insert into operatory_notes (patient_id,Date_entered,user_id,note_class,note_type,note_type_id,description,note,color,post_proc_status,date_modified,modified_by,locked_eod,status,tooth_data,claim_id,statement_yn,resp_party_id,tooth,tran_num,archive_name,archive_path,service_code,practice_id,freshness,surface_detail,surface)  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";//, $data['patient_id'],$Date_entered,$user_id,$note_class,$note_type,$note_type_id,$description,$note,$color,$post_proc_status,$date_modified,$modified_by,$locked_eod,$status,$tooth_data,$claim_id,$statement_yn,$resp_party_id,$tooth,$tran_num,$archive_name,$archive_path,$service_code,$practice_id,$freshness,$surface_detail,$surface)";
+
+
+
+                                    OdbcCommand cmd = new OdbcCommand(query2, con);
+                                    #region Operatory Data Table
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.patient_id);
+                                    cmd.Parameters.AddWithValue("?", dateTimeNow);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.user_id);
+                                    cmd.Parameters.AddWithValue("?", "T");// Note class should be always T
+
+                                    cmd.Parameters.AddWithValue("?", opn.note_type);
+                                    cmd.Parameters.AddWithValue("?", opn.note_type_id);
+                                    cmd.Parameters.AddWithValue("?", opn.description);
+
+                                    cmd.Parameters.AddWithValue("?", on.note + operatoryNotes.note);
+
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.color);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.post_proc_status);
+                                    cmd.Parameters.AddWithValue("?", dateTimeNow);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.user_id); //same as user_id/provider_id
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.locked_eod);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.status);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.tooth_data);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.claim_id);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.statement_yn);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.resp_party_id);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.tooth);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.tran_num);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.archive_name);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.archive_path);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.service_code);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.practice_id);
+                                    cmd.Parameters.AddWithValue("?", dateTimeNow);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.surface_detail);
+                                    cmd.Parameters.AddWithValue("?", operatoryNotes.surface);
+                                    #endregion Operatory Data Table
+                                    rows = cmd.ExecuteNonQuery();
+
+
+                                }
+
+                            }
+                        }
                         con.Close();
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Error:Unable to connect to the database for GET notes api.");
+                        Console.ResetColor();
+                        SettingsExtensions.IsDBConnected = true;
+                    }
                 }
 
                 else
@@ -247,71 +261,85 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                     string query = string.Format(@"Select  id, note_type, description from operatory_notes_type  where note_type='{0}'", noteType);
                     OdbcCommand cmd1 = new OdbcCommand(query, con);
 
-                    con.Open();
-                    OdbcDataReader rdr = cmd1.ExecuteReader();
-
-                    while (rdr.Read())
+                    try
                     {
-                        operatory_notes opn = new operatory_notes();
-                        opn.note_type_id = Convert.ToInt32(rdr["id"]);
-                        opn.note_type = rdr["note_type"].ToString();
-                        opn.description = rdr["description"].ToString();
-
-                        // If AutoNote Id is NOT passed from the Api and provider is Modifing an existing note   
-                        if (operatoryNotes.note_id != 0 && operatoryNotes.note_type != "N")
+                        con.Open();
+                        if (con.State == System.Data.ConnectionState.Open)
                         {
-                          
-                            string query3 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}',modified_by='{3}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
-                                 opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.tooth, operatoryNotes.surface, operatoryNotes.color, operatoryNotes.note,"T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
-                            OdbcCommand cmd3 = new OdbcCommand(query3, con);
-                             rows = cmd3.ExecuteNonQuery();
+                            SettingsExtensions.IsDBConnected = true;
+                        }
+                        OdbcDataReader rdr = cmd1.ExecuteReader();
+
+                        while (rdr.Read())
+                        {
+                            operatory_notes opn = new operatory_notes();
+                            opn.note_type_id = Convert.ToInt32(rdr["id"]);
+                            opn.note_type = rdr["note_type"].ToString();
+                            opn.description = rdr["description"].ToString();
+
+                            // If AutoNote Id is NOT passed from the Api and provider is Modifing an existing note   
+                            if (operatoryNotes.note_id != 0 && operatoryNotes.note_type != "N")
+                            {
+
+                                string query3 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}',modified_by='{3}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
+                                     opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.tooth, operatoryNotes.surface, operatoryNotes.color, operatoryNotes.note, "T", operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id, operatoryNotes.user_id);
+                                OdbcCommand cmd3 = new OdbcCommand(query3, con);
+                                rows = cmd3.ExecuteNonQuery();
+
+                            }
+                            // If AutoNote Id is NOT passed from the Api and provider is creating an new note   
+                            else
+                            {
+                                string query4 = "Insert into operatory_notes (patient_id,Date_entered,user_id,note_class,note_type,note_type_id,description,note,color,post_proc_status,date_modified,modified_by,locked_eod,status,tooth_data,claim_id,statement_yn,resp_party_id,tooth,tran_num,archive_name,archive_path,service_code,practice_id,freshness,surface_detail,surface)  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";//, $data['patient_id'],$Date_entered,$user_id,$note_class,$note_type,$note_type_id,$description,$note,$color,$post_proc_status,$date_modified,$modified_by,$locked_eod,$status,$tooth_data,$claim_id,$statement_yn,$resp_party_id,$tooth,$tran_num,$archive_name,$archive_path,$service_code,$practice_id,$freshness,$surface_detail,$surface)";
+
+                                OdbcCommand cmd4 = new OdbcCommand(query4, con);
+                                #region Operatory Data Table
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.patient_id);
+                                cmd4.Parameters.AddWithValue("?", dateTimeNow);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.user_id);
+                                cmd4.Parameters.AddWithValue("?", "T");// Note class should be always T
+                                cmd4.Parameters.AddWithValue("?", opn.note_type);
+                                cmd4.Parameters.AddWithValue("?", opn.note_type_id);
+
+                                cmd4.Parameters.AddWithValue("?", opn.description);
+
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.note);
+
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.color);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.post_proc_status);
+                                cmd4.Parameters.AddWithValue("?", dateTimeNow);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.user_id);//same as user_id/provider_id
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.locked_eod);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.status);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.tooth_data);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.claim_id);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.statement_yn);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.resp_party_id);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.tooth);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.tran_num);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.archive_name);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.archive_path);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.service_code);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.practice_id);
+                                cmd4.Parameters.AddWithValue("?", dateTimeNow);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.surface_detail);
+                                cmd4.Parameters.AddWithValue("?", operatoryNotes.surface);
+                                #endregion Operatory Data Table
+                                rows = cmd4.ExecuteNonQuery();
+
+                            }
+
 
                         }
-                        // If AutoNote Id is NOT passed from the Api and provider is creating an new note   
-                        else
-                        {
-                            string query4 = "Insert into operatory_notes (patient_id,Date_entered,user_id,note_class,note_type,note_type_id,description,note,color,post_proc_status,date_modified,modified_by,locked_eod,status,tooth_data,claim_id,statement_yn,resp_party_id,tooth,tran_num,archive_name,archive_path,service_code,practice_id,freshness,surface_detail,surface)  VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";//, $data['patient_id'],$Date_entered,$user_id,$note_class,$note_type,$note_type_id,$description,$note,$color,$post_proc_status,$date_modified,$modified_by,$locked_eod,$status,$tooth_data,$claim_id,$statement_yn,$resp_party_id,$tooth,$tran_num,$archive_name,$archive_path,$service_code,$practice_id,$freshness,$surface_detail,$surface)";
-
-                            OdbcCommand cmd4 = new OdbcCommand(query4, con);
-                            #region Operatory Data Table
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.patient_id);
-                            cmd4.Parameters.AddWithValue("?", dateTimeNow);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.user_id);
-                            cmd4.Parameters.AddWithValue("?", "T");// Note class should be always T
-                            cmd4.Parameters.AddWithValue("?", opn.note_type);
-                            cmd4.Parameters.AddWithValue("?", opn.note_type_id);
-
-                            cmd4.Parameters.AddWithValue("?", opn.description);
-
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.note);
-
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.color);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.post_proc_status);
-                            cmd4.Parameters.AddWithValue("?", dateTimeNow);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.user_id);//same as user_id/provider_id
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.locked_eod);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.status);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.tooth_data);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.claim_id);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.statement_yn);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.resp_party_id);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.tooth);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.tran_num);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.archive_name);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.archive_path);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.service_code);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.practice_id);
-                            cmd4.Parameters.AddWithValue("?", dateTimeNow);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.surface_detail);
-                            cmd4.Parameters.AddWithValue("?", operatoryNotes.surface);
-                            #endregion Operatory Data Table
-                             rows = cmd4.ExecuteNonQuery();
-
-                        }
-                     
-
+                        con.Close();
                     }
-                    con.Close();
+                    catch (Exception ex)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("Error:Unable to connect to the database for GET notes api.");
+                        Console.ResetColor();
+                        SettingsExtensions.IsDBConnected = true;
+                    }
 
                 }
 

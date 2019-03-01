@@ -191,7 +191,7 @@
                             else
                             {
                                 _logger.LogInformation("-----------------------------------------------------------------------------");
-                                _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message:{2}", DateTime.Now.ToString(), NoContentResponse.Code, NoContentResponse.Message));
+                                _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message:{2}", DateTime.Now.ToString(), InternalServerError.Code, InternalServerError.Message));
                                 _logger.LogInformation("-----------------------------------------------------------------------------");
 
 
@@ -242,7 +242,15 @@
         {
             try
             {
-                if (opNotesDto == null)
+                if ( !SettingsExtensions.IsDBConnected)
+                {
+                    _logger.LogInformation("-----------------------------------------------------------------------------");
+                    _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message:{2}", DateTime.Now.ToString(), InternalServerError.Code, InternalServerError.Message));
+                    _logger.LogInformation("-----------------------------------------------------------------------------");
+
+                    return StatusCode(InternalServerError.Code, new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(InternalServerError.CodeString, InternalServerError.DBConFailedMessage)));
+                }
+                    if (opNotesDto == null)
                 {
                     _logger.LogInformation("-----------------------------------------------------------------------------");
                     _logger.LogError(string.Format("Date : {0},Request object can not be NULL, Error Status Code: {1}, Error Status Message: {2}", DateTime.Now.ToString(), BadRequestResponse.Code, BadRequestResponse.Message));
