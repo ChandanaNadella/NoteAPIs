@@ -109,6 +109,7 @@
 
         [HttpGet(Name = "GetPatientNotes")]
         public IActionResult GetPatientNotes([FromQuery]NoteResourceParameter notesData)
+
         {
             try
             {
@@ -182,20 +183,22 @@
                             if (SettingsExtensions.IsDBConnected)
                             {
                                 _logger.LogInformation("-----------------------------------------------------------------------------");
-                                _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message:{2}", DateTime.Now.ToString(), NoContentResponse.Code, NoContentResponse.Message));
+                                _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message:{2}", DateTime.Now.ToString(), NoContentResponse.Code, NoContentResponse.DBConFailedMessage));
                                 _logger.LogInformation("-----------------------------------------------------------------------------");
 
 
-                                return NotFound(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(NoContentResponse.Code, NoContentResponse.Message)));
+                                return StatusCode(NoContentRespons
+                                    e.Code, new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(NoContentResponse.CodeString, NoContentResponse.DBConFailedMessage)));
                             }
                             else
                             {
                                 _logger.LogInformation("-----------------------------------------------------------------------------");
-                                _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message:{2}", DateTime.Now.ToString(), InternalServerError.Code, InternalServerError.Message));
+                                _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message:{2}", DateTime.Now.ToString(), InternalServerError.Code, InternalServerError.DBConFailedMessage));
                                 _logger.LogInformation("-----------------------------------------------------------------------------");
 
 
-                                return StatusCode(InternalServerError.Code, new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(InternalServerError.CodeString, InternalServerError.DBConFailedMessage)));
+                               return StatusCode(InternalServerError.Code, new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(InternalServerError.CodeString, InternalServerError.DBConFailedMessage)));
+                             
                             }
                         }
                         else
@@ -245,12 +248,12 @@
                 if ( !SettingsExtensions.IsDBConnected)
                 {
                     _logger.LogInformation("-----------------------------------------------------------------------------");
-                    _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message:{2}", DateTime.Now.ToString(), InternalServerError.Code, InternalServerError.Message));
+                    _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message:{2}", DateTime.Now.ToString(), InternalServerError.Code, InternalServerError.DBConFailedMessage));
                     _logger.LogInformation("-----------------------------------------------------------------------------");
 
                     return StatusCode(InternalServerError.Code, new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(InternalServerError.CodeString, InternalServerError.DBConFailedMessage)));
                 }
-                    if (opNotesDto == null)
+                 else if (opNotesDto == null)
                 {
                     _logger.LogInformation("-----------------------------------------------------------------------------");
                     _logger.LogError(string.Format("Date : {0},Request object can not be NULL, Error Status Code: {1}, Error Status Message: {2}", DateTime.Now.ToString(), BadRequestResponse.Code, BadRequestResponse.Message));
@@ -290,7 +293,7 @@
                             _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message: {2}", DateTime.Now.ToString(), NoContentResponse.Code, NoContentResponse.Message));
                             _logger.LogInformation("-----------------------------------------------------------------------------");
 
-                            return BadRequest(new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(NoContentResponse.Code, NoContentResponse.Message)));
+                            return StatusCode(NoContentResponse.Code, new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(NoContentResponse.CodeString, NoContentResponse.DBConFailedMessage)));
 
                         }
 

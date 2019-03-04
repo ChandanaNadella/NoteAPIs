@@ -70,6 +70,7 @@
 
     public static class BadRequestResponse
     {
+
         public const string Code = "400";
 
         public const string Message = "Bad Request";
@@ -82,11 +83,13 @@
         public const string Message = "Not Found";
 
     }
-    public static class NoContentResponse
+    public static class NoContentResponse    
     {
-        public const string Code = "204";
+        public const int Code = 204;
+        public const string CodeString = "204";
 
         public const string Message = "No Content";
+        public const string DBConFailedMessage = "No Content.";
 
     }
     public static class UnprocessableEntityResponse

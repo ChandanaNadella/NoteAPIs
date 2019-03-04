@@ -127,7 +127,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Error:Unable to connect to the database for GET notes api.");
                     Console.ResetColor();
-                    SettingsExtensions.IsDBConnected = true;
+                    SettingsExtensions.IsDBConnected = false;
                 }
             }
 
