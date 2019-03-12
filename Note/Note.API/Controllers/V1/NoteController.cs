@@ -231,8 +231,17 @@
         [HttpPost(Name = "PostInsertUpdateOperatoryNotes")]
         public IActionResult PostInsertUpdateOperatoryNotes(OperatoryNotesUpdateDto opNotesDto, int? autoNoteId)
         {
+            if (opNotesDto == null)
+            {
 
-            if (!ModelState.IsValid)
+                _logger.LogInformation("-----------------------------------------------------------------------------");
+                _logger.LogError(string.Format("Date : {0},Request object can not be NULL, Error Status Code: {1}, Error Status Message: {2}", DateTime.Now.ToString(), BadRequestResponse.Code, BadRequestResponse.Message));
+                _logger.LogInformation("-----------------------------------------------------------------------------");
+                return BadRequest(new ApiErrorResponseData(false, "Request object can not be NULL.", new KeyValuePair<string, string>(BadRequestResponse.Code, BadRequestResponse.Message)));
+            }
+
+            
+            else if (!ModelState.IsValid)
             {
 
                 var message = string.Join(" | ", ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage));
@@ -246,14 +255,6 @@
 
                 return new Common.Helpers.UnprocessableEntityObjectResult(ModelState);
 
-            }
-            else if (opNotesDto == null)
-            {
-
-                _logger.LogInformation("-----------------------------------------------------------------------------");
-                _logger.LogError(string.Format("Date : {0},Request object can not be NULL, Error Status Code: {1}, Error Status Message: {2}", DateTime.Now.ToString(), BadRequestResponse.Code, BadRequestResponse.Message));
-                _logger.LogInformation("-----------------------------------------------------------------------------");
-                return BadRequest(new ApiErrorResponseData(false, "Request object can not be NULL.", new KeyValuePair<string, string>(BadRequestResponse.Code, BadRequestResponse.Message)));
             }
             else if (!SettingsExtensions.IsDBConnected)
             {
