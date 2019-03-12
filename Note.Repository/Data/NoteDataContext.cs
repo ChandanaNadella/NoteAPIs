@@ -151,7 +151,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
             using (OdbcConnection con = new OdbcConnection(ConnectionPath))
             {
 
-                var dateTimeNow = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
+                var dateTimeNow = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
                 if (autoNoteId != null)
                 {

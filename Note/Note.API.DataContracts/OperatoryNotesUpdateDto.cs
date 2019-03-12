@@ -14,7 +14,7 @@
 
 
        
-        [RegularExpression("^([1-9]+)", ErrorMessage = AlertMessages.patientId_Invalid)]
+        [RegularExpression("^([0-9]{1,5})", ErrorMessage = AlertMessages.patientId_Invalid)]
         [Required(ErrorMessage = AlertMessages.patientId_Required)]
         public string patient_id { set; get; }
 
@@ -23,7 +23,7 @@
         public string user_id { set; get; }
 
 
-        [RegularExpression("^([a-zA-Z])", ErrorMessage = AlertMessages.noteclass_Invalid)]
+        [RegularExpression("^([a-zA-Z]{1})", ErrorMessage = AlertMessages.noteclass_Invalid)]
         public string note_class { set; get; }
 
         [Required(ErrorMessage = AlertMessages.noteType_Required)]
