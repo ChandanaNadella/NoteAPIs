@@ -24,7 +24,7 @@
 
         public OperatoryNotesRequest OperatoryNoteRequest { get; set; }
 
-        public string SearchQuery { get; set; }
+        //public string SearchQuery { get; set; }
 
         public string OrderBy { get; set; } = "CreatedDate desc";
 

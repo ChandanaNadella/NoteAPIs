@@ -56,7 +56,7 @@ namespace Note.Services
         /// <param name="autoNoteId"></param>
 
         #region InsertOrUpdateNotes  
-        public bool InsertOrUpdateNotes(operatory_notes operatoryNotes, int? autoNoteId, string noteType)
+        public string InsertOrUpdateNotes(operatory_notes operatoryNotes, int? autoNoteId, string noteType)
         {
 
            return  _context.InsertOrUpdateOperatoryNotes(operatoryNotes, autoNoteId,noteType);

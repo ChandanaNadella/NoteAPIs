@@ -7,6 +7,7 @@
         public const string providerId_Required = "Provider Id /User Id is Required Field.";
         public const string noteId_Required = "Note Id is Required Field.";
         public const string noteType_Required = "Note Type is Required Field.";
+        public const string noteClass_Required = "Please enter the Note Class as 'T'.";
         public const string color_Required = "Color is Required Field.";
         public const string locked_Eod_Required = "Locked Eod is Required Field.";
         public const string claimId_Required = "Claim Id is Required Field.";
@@ -24,10 +25,10 @@
         public const string noteId_Invalid = "Note Id is Invalid.";
         public const string patientId_Invalid = "Patient Id is Invalid.";
         public const string providerId_Invalid = "Provider Id is Invalid.";
-        public const string noteclass_Invalid = "Note Class is Invalid.";
+        public const string noteclass_Invalid = "Note Class should be of type 'T'.";
         public const string noteType_Invalid = "Note Type is Invalid.";
         public const string color_Invalid = "Color is Invalid.";
-        public const string post_proc_status_Invalid = "Post_proc_status is Invalid.";
+        public const string post_proc_status_Invalid = "Post_proc_status should be 'U' or 'v'.";
         public const string locked_Eod_Invalid = "Locked Eod is Invalid.";
         public const string status_Invalid = "Status is Invalid.";
         public const string tooth_Data_Invalid = "Tooth Data is Invalid.";
@@ -46,12 +47,12 @@
 
     }
     //Api Response Error Code and messages
-    public static  class SuccessResponse
+    public static class SuccessResponse
     {
         public const string Code = "200";
 
         public const string Message = "OK";
-        
+
     }
 
     public static class InternalServerError
@@ -78,7 +79,7 @@
         public const string Message = "Not Found";
 
     }
-    public static class NoContentResponse    
+    public static class NoContentResponse
     {
         public const int Code = 204;
         public const string CodeString = "204";

@@ -20,7 +20,7 @@
         /// <param name="operatoryNotesToUpdate"></param>
         /// <param name="autoNoteId"></param>
         /// <returns></returns>
-        bool InsertOrUpdateNotes(operatory_notes operatoryNotesToUpdate, int? autoNoteId, string noteType);
+        string InsertOrUpdateNotes(operatory_notes operatoryNotesToUpdate, int? autoNoteId, string noteType);
 
 
     }

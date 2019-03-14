@@ -270,11 +270,20 @@
             {
 
                 var OperatoryNotesUpdateDto = Mapper.Map<RP.operatory_notes>(opNotesDto);
-                var isAffected = _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, opNotesDto.note_type);
+                string isAffected = _noteService.InsertOrUpdateNotes(OperatoryNotesUpdateDto, autoNoteId, opNotesDto.note_type);
 
-                if (isAffected == true)
+                if (isAffected == "true")
                 {
                     return Ok(new ApiSuccessResponseData(true, opNotesDto, new KeyValuePair<string, string>(SuccessResponse.Code, SuccessResponse.Message)));
+                }
+                else if (isAffected == "Contract Note")
+                {
+                    _logger.LogInformation("-----------------------------------------------------------------------------");
+                    _logger.LogError(string.Format("Date : {0}, Error Status Code: {1},Contract Note should not be updated,Error Status Message: {2}", DateTime.Now.ToString(), BadRequestResponse.Code, BadRequestResponse.Message));
+                    _logger.LogInformation("-----------------------------------------------------------------------------");
+
+                    return BadRequest(new ApiErrorResponseData(false, "Contract Note should not be updated.", new KeyValuePair<string, string>(BadRequestResponse.Code, BadRequestResponse.Message)));
+
                 }
                 else
                 {
@@ -282,7 +291,7 @@
                     _logger.LogError(string.Format("Date : {0}, Error Status Code: {1}, Error Status Message: {2}", DateTime.Now.ToString(), NoContentResponse.Code, NoContentResponse.Message));
                     _logger.LogInformation("-----------------------------------------------------------------------------");
 
-                    return StatusCode(NoContentResponse.Code, new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(NoContentResponse.CodeString, NoContentResponse.DBConFailedMessage)));
+                    return NotFound( new ApiErrorResponseData(false, null, new KeyValuePair<string, string>(NotFoundResponse.Code,NotFoundResponse.Message)));
 
                 }
 
