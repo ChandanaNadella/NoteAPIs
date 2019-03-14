@@ -12,7 +12,9 @@ namespace Note.API.DataContracts.Requests
     {
 
         [Required(ErrorMessage = AlertMessages.clinicId_Required)]
-        [RegularExpression("^[1-9]\\d*$", ErrorMessage = AlertMessages.clinicId_Invalid)]
+        [Range(1, short.MaxValue, ErrorMessage = AlertMessages.clinicId_Range)]
+        [RegularExpression("^([1-9]+)", ErrorMessage = AlertMessages.clinicId_Invalid)]
+
         public string ClinicId { get; set; }
 
 
