@@ -229,7 +229,7 @@ INNER JOIN provider pr  ON  o_n.user_Id=pr.provider_Id  where p.patient_id  ='{0
                                     if (operatoryNotes.note_id != 0 && operatoryNotes.note_type != "N")
                                     {
 
-                                        string query1 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}',modified_by='{3}, date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
+                                        string query1 = string.Format(@"Update operatory_notes SET note_type_id='{0}',note_type='{1}',modified_by='{3}', date_modified = '{2}', freshness = '{2}' , user_id='{3}', description='{4}',tooth='{5}', surface='{6}', color='{7}', note = note +','+'{8}', note_class='{9}'  where note_id ='{10}' AND patient_id ='{11}' AND  practice_id= '{12}' AND  user_id= '{3}'",
                                            opn.note_type_id, opn.note_type, dateTimeNow, operatoryNotes.user_id, opn.description, operatoryNotes.tooth, operatoryNotes.surface, operatoryNotes.color, operatoryNotes.note, operatoryNotes.note_class, operatoryNotes.note_id, operatoryNotes.patient_id, operatoryNotes.practice_id);
 
                                         OdbcCommand cmd2 = new OdbcCommand(query1, con);
